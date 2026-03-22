@@ -1,0 +1,50 @@
+<div class="auth-container">
+  <div class="auth-card">
+    <h2>Create account</h2>
+    <p class="subtitle">Join the chat today</p>
+
+    <form (ngSubmit)="onRegister()">
+      <div class="form-group">
+        <label>Username</label>
+        <input 
+          type="text" 
+          [(ngModel)]="username" 
+          name="username"
+          placeholder="Choose a username"
+          required
+        />
+      </div>
+
+      <div class="form-group">
+        <label>Email</label>
+        <input 
+          type="email" 
+          [(ngModel)]="email" 
+          name="email"
+          placeholder="Enter your email"
+          required
+        />
+      </div>
+
+      <div class="form-group">
+        <label>Password</label>
+        <input 
+          type="password" 
+          [(ngModel)]="password" 
+          name="password"
+          placeholder="Choose a password"
+          required
+        />
+      </div>
+
+      <p class="error" *ngIf="error">{{ error }}</p>
+      <p class="success" *ngIf="success">{{ success }}</p>
+
+      <button type="submit" [disabled]="loading">
+        {{ loading ? 'Creating account...' : 'Create account' }}
+      </button>
+    </form>
+
+    <p class="switch">Already have an account? <a routerLink="/login">Sign in</a></p>
+  </div>
+</div>
