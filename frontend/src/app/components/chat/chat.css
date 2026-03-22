@@ -415,3 +415,15 @@
 }
 
 .create-btn:hover { background: #c73652; }
+
+.settings-btn {
+  background: transparent;
+  border: none;
+  font-size: 1.1rem;
+  cursor: pointer;
+  margin-right: 0.5rem;
+  padding: 0.3rem;
+  border-radius: 6px;
+}
+
+.settings-btn:hover { background: #0f3460; }

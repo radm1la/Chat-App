@@ -1,14 +1,15 @@
 <div class="chat-container">
   <!-- Top navbar -->
   <div class="navbar">
-    <div class="navbar-left">
-      <h1>💬 ChatApp</h1>
-    </div>
-    <div class="navbar-right">
-      <span class="username">{{ currentUser?.username }}</span>
-      <button class="logout-btn" (click)="logout()">Logout</button>
-    </div>
+  <div class="navbar-left">
+    <h1>💬 ChatApp</h1>
   </div>
+  <div class="navbar-right">
+    <span class="username">{{ currentUser?.username }}</span>
+    <button class="settings-btn" (click)="showSettings = true">⚙️</button>
+    <button class="logout-btn" (click)="logout()">Logout</button>
+  </div>
+</div>
 
   <div class="main-content">
     <!-- Sidebar -->
@@ -173,3 +174,5 @@
     </div>
   </div>
 </div>
+
+<app-settings *ngIf="showSettings" (closed)="showSettings = false" />

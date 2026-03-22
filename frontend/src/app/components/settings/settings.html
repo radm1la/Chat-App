@@ -1,0 +1,39 @@
+<div class="modal-overlay" (click)="close()">
+  <div class="modal" (click)="$event.stopPropagation()">
+    <h3>Account Settings</h3>
+
+    <!-- Change Password -->
+    <div class="section">
+      <h4>Change Password</h4>
+      <div class="form-group">
+        <label>Current Password</label>
+        <input type="password" [(ngModel)]="oldPassword" placeholder="Enter current password" />
+      </div>
+      <div class="form-group">
+        <label>New Password</label>
+        <input type="password" [(ngModel)]="newPassword" placeholder="Enter new password" />
+      </div>
+      <p class="error" *ngIf="passwordError">{{ passwordError }}</p>
+      <p class="success" *ngIf="passwordSuccess">{{ passwordSuccess }}</p>
+      <button class="save-btn" (click)="changePassword()">Change Password</button>
+    </div>
+
+    <hr />
+
+    <!-- Delete Account -->
+    <div class="section danger-section">
+      <h4>Delete Account</h4>
+      <p>This will permanently delete your account and all rooms you own.</p>
+      <button class="danger-btn" (click)="confirmDelete()">Delete Account</button>
+      <div class="confirm-delete" *ngIf="showConfirmDelete">
+        <p>Are you sure? This cannot be undone!</p>
+        <button class="danger-btn" (click)="deleteAccount()">Yes, delete my account</button>
+        <button class="cancel-btn" (click)="showConfirmDelete = false">Cancel</button>
+      </div>
+    </div>
+
+    <div class="modal-actions">
+      <button class="cancel-btn" (click)="close()">Close</button>
+    </div>
+  </div>
+</div>

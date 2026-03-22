@@ -13,11 +13,12 @@ import { ChatService } from '../../services/chat.service';
 import { RoomsService } from '../../services/rooms.service';
 import { Subscription } from 'rxjs';
 import { PresenceService } from '../../services/presence';
+import { SettingsComponent } from "../settings/settings";
 
 @Component({
   selector: 'app-chat',
   standalone: true,
-  imports: [CommonModule, FormsModule, DatePipe, SlicePipe],
+  imports: [CommonModule, FormsModule, DatePipe, SlicePipe, SettingsComponent],
   templateUrl: './chat.html',
   styleUrl: './chat.css',
 })
@@ -41,6 +42,7 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
   presenceMap: { [key: string]: string } = {};
   private shouldScrollToBottom = true;
   private subscriptions: Subscription[] = [];
+  showSettings = false;
 
   newRoom = {
     name: '',
