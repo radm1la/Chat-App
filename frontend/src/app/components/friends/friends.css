@@ -1,0 +1,134 @@
+.friends-panel {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.tabs {
+  display: flex;
+  border-bottom: 1px solid #0f3460;
+  margin-bottom: 0.5rem;
+}
+
+.tabs button {
+  flex: 1;
+  padding: 0.5rem;
+  background: transparent;
+  border: none;
+  color: #aaa;
+  cursor: pointer;
+  font-size: 0.8rem;
+  position: relative;
+}
+
+.tabs button.active {
+  color: #e94560;
+  border-bottom: 2px solid #e94560;
+}
+
+.badge {
+  background: #e94560;
+  color: #fff;
+  border-radius: 50%;
+  width: 16px;
+  height: 16px;
+  font-size: 0.7rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 4px;
+}
+
+.friend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem;
+  border-radius: 6px;
+}
+
+.friend-item:hover { background: #0f3460; }
+
+.friend-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #0f3460;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.85rem;
+  font-weight: bold;
+  flex-shrink: 0;
+}
+
+.friend-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.friend-name { font-size: 0.85rem; color: #ccc; }
+.request-text { font-size: 0.75rem; color: #666; }
+
+.friend-actions {
+  display: flex;
+  gap: 0.3rem;
+}
+
+.friend-actions button {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0.2rem 0.4rem;
+  border-radius: 4px;
+  font-size: 0.85rem;
+}
+
+.msg-btn:hover { background: #0f3460; }
+.accept-btn { color: #4caf50; }
+.accept-btn:hover { background: rgba(76,175,80,0.1); }
+.remove-btn { color: #e94560; }
+.remove-btn:hover { background: rgba(233,69,96,0.1); }
+
+.add-friend {
+  padding: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.add-friend input {
+  width: 100%;
+  padding: 0.6rem;
+  background: #0f3460;
+  border: 1px solid #333;
+  border-radius: 6px;
+  color: #fff;
+  font-size: 0.85rem;
+  box-sizing: border-box;
+}
+
+.add-friend input:focus { outline: none; border-color: #e94560; }
+
+.add-friend button {
+  padding: 0.6rem;
+  background: #e94560;
+  border: none;
+  color: #fff;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.85rem;
+}
+
+.add-friend button:hover { background: #c73652; }
+
+.empty {
+  text-align: center;
+  color: #666;
+  padding: 1rem;
+  font-size: 0.85rem;
+}
+
+.error { color: #e94560; font-size: 0.85rem; }
+.success { color: #4caf50; font-size: 0.85rem; }

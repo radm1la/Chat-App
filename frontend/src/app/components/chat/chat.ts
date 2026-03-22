@@ -14,11 +14,12 @@ import { RoomsService } from '../../services/rooms.service';
 import { Subscription } from 'rxjs';
 import { PresenceService } from '../../services/presence';
 import { SettingsComponent } from "../settings/settings";
+import { FriendsComponent } from '../friends/friends';
 
 @Component({
   selector: 'app-chat',
   standalone: true,
-  imports: [CommonModule, FormsModule, DatePipe, SlicePipe, SettingsComponent],
+  imports: [CommonModule, FormsModule, DatePipe, SlicePipe, SettingsComponent,FriendsComponent],
   templateUrl: './chat.html',
   styleUrl: './chat.css',
 })
@@ -43,6 +44,7 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
   private shouldScrollToBottom = true;
   private subscriptions: Subscription[] = [];
   showSettings = false;
+  sidebarTab = 'rooms';
 
   newRoom = {
     name: '',
@@ -224,4 +226,9 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
     this.chatService.disconnect();
     this.authService.logout();
   }
+
+  startPersonalChat(user: any) {
+  console.log('Opening personal chat with', user);
+  // We will implement this in the next step
+}
 }

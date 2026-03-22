@@ -1,0 +1,54 @@
+<div class="friends-panel">
+  <!-- Tabs -->
+  <div class="tabs">
+    <button [class.active]="activeTab === 'friends'" (click)="activeTab = 'friends'">Friends</button>
+    <button [class.active]="activeTab === 'pending'" (click)="activeTab = 'pending'; loadPending()">
+      Pending
+      <span class="badge" *ngIf="pendingCount > 0">{{ pendingCount }}</span>
+    </button>
+    <button [class.active]="activeTab === 'add'" (click)="activeTab = 'add'">Add</button>
+  </div>
+
+  <!-- Friends list -->
+  <div *ngIf="activeTab === 'friends'">
+    <div class="empty" *ngIf="friends.length === 0">No friends yet</div>
+    <div class="friend-item" *ngFor="let friend of friends">
+      <div class="friend-avatar">{{ friend.user?.username?.charAt(0).toUpperCase() }}</div>
+      <div class="friend-info">
+        <span class="friend-name">{{ friend.user?.username }}</span>
+      </div>
+      <div class="friend-actions">
+        <button class="msg-btn" (click)="openChat(friend)">💬</button>
+        <button class="remove-btn" (click)="removeFriend(friend)">✕</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Pending requests -->
+  <div *ngIf="activeTab === 'pending'">
+    <div class="empty" *ngIf="pendingRequests.length === 0">No pending requests</div>
+    <div class="friend-item" *ngFor="let request of pendingRequests">
+      <div class="friend-avatar">{{ request.sender?.username?.charAt(0).toUpperCase() }}</div>
+      <div class="friend-info">
+        <span class="friend-name">{{ request.sender?.username }}</span>
+        <span class="request-text">{{ request.text }}</span>
+      </div>
+      <div class="friend-actions">
+        <button class="accept-btn" (click)="acceptRequest(request)">✓</button>
+        <button class="remove-btn" (click)="declineRequest(request)">✕</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add friend -->
+  <div *ngIf="activeTab === 'add'" class="add-friend">
+    <input 
+      type="text" 
+      [(ngModel)]="searchUsername" 
+      placeholder="Enter username..."
+    />
+    <button (click)="sendRequest()">Send Request</button>
+    <p class="error" *ngIf="error">{{ error }}</p>
+    <p class="success" *ngIf="success">{{ success }}</p>
+  </div>
+</div>

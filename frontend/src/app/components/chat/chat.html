@@ -1,59 +1,73 @@
 <div class="chat-container">
   <!-- Top navbar -->
   <div class="navbar">
-  <div class="navbar-left">
-    <h1>💬 ChatApp</h1>
+    <div class="navbar-left">
+      <h1>💬 ChatApp</h1>
+    </div>
+    <div class="navbar-right">
+      <span class="username">{{ currentUser?.username }}</span>
+      <button class="settings-btn" (click)="showSettings = true">⚙️</button>
+      <button class="logout-btn" (click)="logout()">Logout</button>
+    </div>
   </div>
-  <div class="navbar-right">
-    <span class="username">{{ currentUser?.username }}</span>
-    <button class="settings-btn" (click)="showSettings = true">⚙️</button>
-    <button class="logout-btn" (click)="logout()">Logout</button>
-  </div>
-</div>
 
   <div class="main-content">
     <!-- Sidebar -->
     <div class="sidebar">
-      <!-- My Rooms -->
-      <div class="sidebar-section">
-        <div class="section-header">
-          <span>My Rooms</span>
-          <button class="icon-btn" (click)="showCreateRoom = true">+</button>
-        </div>
-        <div 
-          class="room-item" 
-          *ngFor="let member of myRooms"
-          [class.active]="selectedRoom?.id === member.room?.id"
-          (click)="selectRoom(member.room)"
-        >
-          <span class="room-name"># {{ member.room?.name }}</span>
-          <span class="unread-badge" *ngIf="unreadCounts[member.room?.id] > 0">
-            {{ unreadCounts[member.room?.id] }}
-          </span>
-        </div>
+      <!-- Sidebar tabs -->
+      <div class="sidebar-tabs">
+        <button [class.active]="sidebarTab === 'rooms'" (click)="sidebarTab = 'rooms'">Rooms</button>
+        <button [class.active]="sidebarTab === 'friends'" (click)="sidebarTab = 'friends'">Friends</button>
       </div>
 
-      <!-- Public Rooms -->
-      <div class="sidebar-section">
-        <div class="section-header">
-          <span>Public Rooms</span>
+      <!-- Rooms tab -->
+      <ng-container *ngIf="sidebarTab === 'rooms'">
+        <!-- My Rooms -->
+        <div class="sidebar-section">
+          <div class="section-header">
+            <span>My Rooms</span>
+            <button class="icon-btn" (click)="showCreateRoom = true">+</button>
+          </div>
+          <div 
+            class="room-item" 
+            *ngFor="let member of myRooms"
+            [class.active]="selectedRoom?.id === member.room?.id"
+            (click)="selectRoom(member.room)"
+          >
+            <span class="room-name"># {{ member.room?.name }}</span>
+            <span class="unread-badge" *ngIf="unreadCounts[member.room?.id] > 0">
+              {{ unreadCounts[member.room?.id] }}
+            </span>
+          </div>
         </div>
-        <div class="search-box">
-          <input 
-            type="text" 
-            placeholder="Search rooms..." 
-            [(ngModel)]="roomSearch"
-            (input)="searchRooms()"
-          />
+
+        <!-- Public Rooms -->
+        <div class="sidebar-section">
+          <div class="section-header">
+            <span>Public Rooms</span>
+          </div>
+          <div class="search-box">
+            <input 
+              type="text" 
+              placeholder="Search rooms..." 
+              [(ngModel)]="roomSearch"
+              (input)="searchRooms()"
+            />
+          </div>
+          <div 
+            class="room-item" 
+            *ngFor="let room of publicRooms"
+            (click)="joinAndSelectRoom(room)"
+          >
+            <span class="room-name"># {{ room.name }}</span>
+          </div>
         </div>
-        <div 
-          class="room-item" 
-          *ngFor="let room of publicRooms"
-          (click)="joinAndSelectRoom(room)"
-        >
-          <span class="room-name"># {{ room.name }}</span>
-        </div>
-      </div>
+      </ng-container>
+
+      <!-- Friends tab -->
+      <ng-container *ngIf="sidebarTab === 'friends'">
+        <app-friends (openPersonalChat)="startPersonalChat($event)" />
+      </ng-container>
     </div>
 
     <!-- Chat area -->
