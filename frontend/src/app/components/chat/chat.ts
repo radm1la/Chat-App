@@ -16,6 +16,8 @@ import { PresenceService } from '../../services/presence';
 import { SettingsComponent } from '../settings/settings';
 import { FriendsComponent } from '../friends/friends';
 import { PersonalChatComponent } from '../personal-chat/personal-chat';
+import { HttpClient } from '@angular/common/http';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-chat',
@@ -27,7 +29,7 @@ import { PersonalChatComponent } from '../personal-chat/personal-chat';
     SlicePipe,
     SettingsComponent,
     FriendsComponent,
-    PersonalChatComponent
+    PersonalChatComponent,
   ],
   templateUrl: './chat.html',
   styleUrl: './chat.css',
@@ -55,6 +57,7 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
   showSettings = false;
   sidebarTab = 'rooms';
   activePersonalChat: any = null;
+  selectedFile: File | null = null;
 
   newRoom = {
     name: '',
@@ -67,6 +70,7 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
     private chatService: ChatService,
     private roomsService: RoomsService,
     private presenceService: PresenceService,
+    private http: HttpClient
   ) {}
 
   ngOnInit() {
@@ -171,6 +175,11 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
   }
 
   sendMessage() {
+    if (this.selectedFile) {
+      this.uploadFile();
+      return;
+    }
+
     if (!this.messageText.trim() || !this.selectedRoom) return;
 
     if (this.editingMessage) {
@@ -239,5 +248,27 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
 
   startPersonalChat(user: any) {
     this.activePersonalChat = user;
+  }
+
+  onFileSelected(event: any) {
+    const file = event.target.files[0];
+    if (file) this.selectedFile = file;
+  }
+
+  uploadFile() {
+    if (!this.selectedFile || !this.selectedRoom) return;
+
+    const formData = new FormData();
+    formData.append('file', this.selectedFile);
+
+    this.http
+      .post<any>(`${environment.apiUrl}/uploads/room/${this.selectedRoom.id}`, formData)
+      .subscribe((attachment) => {
+        this.chatService.sendMessage(
+          this.selectedRoom.id,
+          `📎 [${attachment.file_name}](${environment.apiUrl}${attachment.file_path})`,
+        );
+        this.selectedFile = null;
+      });
   }
 }

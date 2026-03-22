@@ -130,6 +130,8 @@
 
         <!-- Message input -->
         <div class="message-input-area">
+          <button class="attach-btn" (click)="fileInput.click()">📎</button>
+          <input #fileInput type="file" style="display: none" (change)="onFileSelected($event)" />
           <textarea
             [(ngModel)]="messageText"
             placeholder="Type a message..."
@@ -137,6 +139,12 @@
             rows="1"
           ></textarea>
           <button class="send-btn" (click)="sendMessage()">Send</button>
+        </div>
+
+        <!-- File preview -->
+        <div class="file-preview" *ngIf="selectedFile">
+          <span>📎 {{ selectedFile.name }}</span>
+          <button (click)="selectedFile = null">✕</button>
         </div>
       </ng-container>
 

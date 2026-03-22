@@ -447,3 +447,35 @@
   color: #e94560;
   border-bottom: 2px solid #e94560;
 }
+
+.attach-btn {
+  background: transparent;
+  border: none;
+  font-size: 1.2rem;
+  cursor: pointer;
+  padding: 0.4rem;
+  border-radius: 6px;
+  color: #aaa;
+}
+
+.attach-btn:hover { background: #0f3460; }
+
+.file-preview {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.4rem 1.5rem;
+  background: #0f3460;
+  border-top: 1px solid #333;
+  font-size: 0.85rem;
+  color: #aaa;
+}
+
+.file-preview button {
+  background: transparent;
+  border: none;
+  color: #aaa;
+  cursor: pointer;
+}
+
+.file-preview button:hover { color: #fff; }
