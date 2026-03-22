@@ -12,6 +12,7 @@ import { AuthService } from '../../services/auth.service';
 import { ChatService } from '../../services/chat.service';
 import { RoomsService } from '../../services/rooms.service';
 import { Subscription } from 'rxjs';
+import { PresenceService } from '../../services/presence';
 
 @Component({
   selector: 'app-chat',
@@ -51,11 +52,13 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
     private authService: AuthService,
     private chatService: ChatService,
     private roomsService: RoomsService,
+    private presenceService: PresenceService,
   ) {}
 
   ngOnInit() {
     this.currentUser = this.authService.getCurrentUser();
     this.chatService.connect();
+    this.presenceService.startTracking();
     this.loadMyRooms();
     this.loadPublicRooms();
 
@@ -84,6 +87,7 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
 
   ngOnDestroy() {
     this.chatService.disconnect();
+    this.presenceService.stopTracking();
     this.subscriptions.forEach((s) => s.unsubscribe());
   }
 
