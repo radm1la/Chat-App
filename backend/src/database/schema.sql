@@ -86,6 +86,8 @@ CREATE TABLE IF NOT EXISTS attachments (
   file_path VARCHAR(500) NOT NULL,
   file_size INTEGER NOT NULL,
   mime_type VARCHAR(100),
+  uploaded_by UUID REFERENCES users(id) ON DELETE SET NULL,
+  room_id UUID REFERENCES rooms(id) ON DELETE CASCADE,
   created_at TIMESTAMP DEFAULT NOW()
 );
 
