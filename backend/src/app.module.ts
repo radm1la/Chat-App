@@ -5,6 +5,7 @@ import { AuthModule } from './auth/auth.module';
 import { RoomsModule } from './rooms/rooms.module';
 import { MessagesModule } from './messages/messages.module';
 import { FriendsModule } from './friends/friends.module';
+import { PersonalModule } from './personal/personal.module';
 import { User } from './users/user.entity';
 import { Room } from './rooms/room.entity';
 import { RoomMember } from './rooms/room-member.entity';
@@ -12,6 +13,8 @@ import { RoomBan } from './rooms/room-ban.entity';
 import { Message } from './messages/message.entity';
 import { Friend } from './friends/friend.entity';
 import { UserBan } from './friends/user-ban.entity';
+import { PersonalChat } from './personal/personal-chat.entity';
+import { PersonalMessage } from './personal/personal-message.entity';
 
 @Module({
   imports: [
@@ -19,13 +22,14 @@ import { UserBan } from './friends/user-ban.entity';
     TypeOrmModule.forRoot({
       type: 'postgres',
       url: process.env.DATABASE_URL,
-      entities: [User, Room, RoomMember, RoomBan, Message, Friend, UserBan],
+      entities: [User, Room, RoomMember, RoomBan, Message, Friend, UserBan, PersonalChat, PersonalMessage],
       synchronize: false,
     }),
     AuthModule,
     RoomsModule,
     MessagesModule,
     FriendsModule,
+    PersonalModule,
   ],
 })
 export class AppModule {}
