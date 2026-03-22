@@ -16,8 +16,12 @@
     <div class="sidebar">
       <!-- Sidebar tabs -->
       <div class="sidebar-tabs">
-        <button [class.active]="sidebarTab === 'rooms'" (click)="sidebarTab = 'rooms'">Rooms</button>
-        <button [class.active]="sidebarTab === 'friends'" (click)="sidebarTab = 'friends'">Friends</button>
+        <button [class.active]="sidebarTab === 'rooms'" (click)="sidebarTab = 'rooms'">
+          Rooms
+        </button>
+        <button [class.active]="sidebarTab === 'friends'" (click)="sidebarTab = 'friends'">
+          Friends
+        </button>
       </div>
 
       <!-- Rooms tab -->
@@ -28,8 +32,8 @@
             <span>My Rooms</span>
             <button class="icon-btn" (click)="showCreateRoom = true">+</button>
           </div>
-          <div 
-            class="room-item" 
+          <div
+            class="room-item"
             *ngFor="let member of myRooms"
             [class.active]="selectedRoom?.id === member.room?.id"
             (click)="selectRoom(member.room)"
@@ -47,18 +51,14 @@
             <span>Public Rooms</span>
           </div>
           <div class="search-box">
-            <input 
-              type="text" 
-              placeholder="Search rooms..." 
+            <input
+              type="text"
+              placeholder="Search rooms..."
               [(ngModel)]="roomSearch"
               (input)="searchRooms()"
             />
           </div>
-          <div 
-            class="room-item" 
-            *ngFor="let room of publicRooms"
-            (click)="joinAndSelectRoom(room)"
-          >
+          <div class="room-item" *ngFor="let room of publicRooms" (click)="joinAndSelectRoom(room)">
             <span class="room-name"># {{ room.name }}</span>
           </div>
         </div>
@@ -84,9 +84,9 @@
           <div class="load-more" *ngIf="hasMoreMessages">
             <button (click)="loadMoreMessages()">Load older messages</button>
           </div>
-          
-          <div 
-            class="message" 
+
+          <div
+            class="message"
             *ngFor="let message of messages"
             [class.own-message]="message.sender_id === currentUser?.id"
           >
@@ -96,7 +96,7 @@
             <div class="message-content">
               <div class="message-header">
                 <span class="message-username">{{ message.sender?.username }}</span>
-                <span class="message-time">{{ message.created_at | date:'HH:mm' }}</span>
+                <span class="message-time">{{ message.created_at | date: 'HH:mm' }}</span>
                 <span class="edited-tag" *ngIf="message.is_edited">edited</span>
               </div>
               <div class="reply-preview" *ngIf="message.reply_to">
@@ -105,14 +105,15 @@
               <p class="message-text">{{ message.content }}</p>
               <div class="message-actions">
                 <button (click)="replyTo(message)">↩</button>
-                <button 
-                  *ngIf="message.sender_id === currentUser?.id"
-                  (click)="startEdit(message)"
-                >✏️</button>
-                <button 
+                <button *ngIf="message.sender_id === currentUser?.id" (click)="startEdit(message)">
+                  ✏️
+                </button>
+                <button
                   *ngIf="message.sender_id === currentUser?.id"
                   (click)="deleteMessage(message)"
-                >🗑️</button>
+                >
+                  🗑️
+                </button>
               </div>
             </div>
           </div>
@@ -120,13 +121,16 @@
 
         <!-- Reply preview -->
         <div class="reply-bar" *ngIf="replyingTo">
-          <span>↩ Replying to {{ replyingTo.sender?.username }}: {{ replyingTo.content | slice:0:50 }}</span>
+          <span
+            >↩ Replying to {{ replyingTo.sender?.username }}:
+            {{ replyingTo.content | slice: 0 : 50 }}</span
+          >
           <button (click)="replyingTo = null">✕</button>
         </div>
 
         <!-- Message input -->
         <div class="message-input-area">
-          <textarea 
+          <textarea
             [(ngModel)]="messageText"
             placeholder="Type a message..."
             (keydown.enter)="onEnterPress($event)"
@@ -166,17 +170,17 @@
 <div class="modal-overlay" *ngIf="showCreateRoom" (click)="showCreateRoom = false">
   <div class="modal" (click)="$event.stopPropagation()">
     <h3>Create a Room</h3>
-    
+
     <div class="form-group">
       <label>Room Name</label>
       <input type="text" [(ngModel)]="newRoom.name" placeholder="e.g. general" />
     </div>
-    
+
     <div class="form-group">
       <label>Description</label>
       <input type="text" [(ngModel)]="newRoom.description" placeholder="What's this room about?" />
     </div>
-    
+
     <div class="form-group checkbox">
       <input type="checkbox" [(ngModel)]="newRoom.isPrivate" id="private" />
       <label for="private">Private room</label>
@@ -189,4 +193,9 @@
   </div>
 </div>
 
+<app-personal-chat
+  *ngIf="activePersonalChat"
+  [user]="activePersonalChat"
+  (closed)="activePersonalChat = null"
+/>
 <app-settings *ngIf="showSettings" (closed)="showSettings = false" />
