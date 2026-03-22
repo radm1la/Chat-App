@@ -67,4 +67,30 @@ export class AuthService {
       select: ['id', 'username', 'email', 'avatar_url', 'created_at'],
     });
   }
+
+  async changePassword(userId: string, oldPassword: string, newPassword: string) {
+  const user = await this.usersRepository.findOne({ where: { id: userId } });
+  if (!user) throw new UnauthorizedException('User not found');
+
+  const valid = await bcrypt.compare(oldPassword, user.password_hash);
+  if (!valid) throw new UnauthorizedException('Old password is incorrect');
+
+  user.password_hash = await bcrypt.hash(newPassword, 10);
+  await this.usersRepository.save(user);
+  return { message: 'Password changed successfully' };
+}
+
+async deleteAccount(userId: string) {
+  await this.usersRepository.delete(userId);
+  return { message: 'Account deleted' };
+}
+
+async resetPassword(email: string, newPassword: string) {
+  const user = await this.usersRepository.findOne({ where: { email } });
+  if (!user) throw new UnauthorizedException('Email not found');
+
+  user.password_hash = await bcrypt.hash(newPassword, 10);
+  await this.usersRepository.save(user);
+  return { message: 'Password reset successfully' };
+}
 }
