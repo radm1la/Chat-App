@@ -387,4 +387,19 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
       },
     });
   }
+
+  onPaste(event: ClipboardEvent) {
+    const items = event.clipboardData?.items;
+    if (!items) return;
+
+    for (let i = 0; i < items.length; i++) {
+      if (items[i].type.indexOf('image') !== -1) {
+        const file = items[i].getAsFile();
+        if (file) {
+          this.selectedFile = file;
+          event.preventDefault();
+        }
+      }
+    }
+  }
 }

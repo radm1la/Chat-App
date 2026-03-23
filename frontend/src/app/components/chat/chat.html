@@ -160,6 +160,7 @@
             [(ngModel)]="messageText"
             placeholder="Type a message..."
             (keydown.enter)="onEnterPress($event)"
+            (paste)="onPaste($event)"
             rows="1"
           ></textarea>
           <button class="send-btn" (click)="sendMessage()">Send</button>
