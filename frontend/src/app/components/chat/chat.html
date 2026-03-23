@@ -133,7 +133,7 @@
                   ✏️
                 </button>
                 <button
-                  *ngIf="message.sender_id === currentUser?.id"
+                  *ngIf="message.sender_id === currentUser?.id || isAdminInRoom()"
                   (click)="deleteMessage(message)"
                 >
                   🗑️
