@@ -91,6 +91,18 @@ export class AuthService {
   }
 
   async deleteAccount(userId: string) {
+    // Delete rooms owned by this user
+    await this.usersRepository.query(`DELETE FROM rooms WHERE owner_id = $1`, [
+      userId,
+    ]);
+
+    // Remove from all other rooms
+    await this.usersRepository.query(
+      `DELETE FROM room_members WHERE user_id = $1`,
+      [userId],
+    );
+
+    // Delete the user
     await this.usersRepository.delete(userId);
     return { message: 'Account deleted' };
   }
