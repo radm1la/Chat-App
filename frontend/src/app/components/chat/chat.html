@@ -102,7 +102,25 @@
               <div class="reply-preview" *ngIf="message.reply_to">
                 <span>↩ Replying to a message</span>
               </div>
-              <p class="message-text">{{ message.content }}</p>
+              <div *ngIf="isFileMessage(message.content); else textMessage">
+                <div class="file-card">
+                  <img
+                    *ngIf="isImageFile(getFileName(message.content))"
+                    [src]="getFileUrl(message.content)"
+                    class="image-preview"
+                    (click)="openLink(getFileUrl(message.content))"
+                  />
+                  <div class="file-card-info">
+                    <span class="file-icon">📎</span>
+                    <a [href]="getFileUrl(message.content)" target="_blank" class="file-link">
+                      {{ getFileName(message.content) }}
+                    </a>
+                  </div>
+                </div>
+              </div>
+              <ng-template #textMessage>
+                <p class="message-text">{{ message.content }}</p>
+              </ng-template>
               <div class="message-actions">
                 <button (click)="replyTo(message)">↩</button>
                 <button *ngIf="message.sender_id === currentUser?.id" (click)="startEdit(message)">
@@ -121,10 +139,8 @@
 
         <!-- Reply preview -->
         <div class="reply-bar" *ngIf="replyingTo">
-          <span
-            >↩ Replying to {{ replyingTo.sender?.username }}:
-            {{ replyingTo.content | slice: 0 : 50 }}</span
-          >
+          <span>↩ Replying to {{ replyingTo.sender?.username }}:
+            {{ replyingTo.content | slice: 0 : 50 }}</span>
           <button (click)="replyingTo = null">✕</button>
         </div>
 

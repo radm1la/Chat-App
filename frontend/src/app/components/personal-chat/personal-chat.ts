@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter, ViewChild, ElementRef, AfterViewChecked } from '@angular/core';
+import { Component, OnInit, OnDestroy, Input, Output, EventEmitter, ViewChild, ElementRef, AfterViewChecked } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
@@ -14,7 +14,7 @@ import { Subscription } from 'rxjs';
   templateUrl: './personal-chat.html',
   styleUrl: './personal-chat.css'
 })
-export class PersonalChatComponent implements OnInit, AfterViewChecked {
+export class PersonalChatComponent implements OnInit, AfterViewChecked, OnDestroy {
   @Input() user: any;
   @Output() closed = new EventEmitter<void>();
   @ViewChild('messagesArea') messagesArea!: ElementRef;
@@ -26,6 +26,7 @@ export class PersonalChatComponent implements OnInit, AfterViewChecked {
   editingMessage: any = null;
   hasMoreMessages = false;
   currentPage = 1;
+  selectedFile: File | null = null;
   private shouldScrollToBottom = true;
   private subscription!: Subscription;
 
@@ -82,10 +83,15 @@ export class PersonalChatComponent implements OnInit, AfterViewChecked {
   }
 
   sendMessage() {
+    if (this.selectedFile) {
+      this.uploadFile();
+      return;
+    }
+
     if (!this.messageText.trim()) return;
 
     if (this.editingMessage) {
-      this.http.patch(`${environment.apiUrl}/personal/message/${this.editingMessage.id}`, {
+      this.http.patch<any>(`${environment.apiUrl}/personal/message/${this.editingMessage.id}`, {
         content: this.messageText
       }).subscribe(updated => {
         const index = this.messages.findIndex(m => m.id === this.editingMessage.id);
@@ -104,6 +110,31 @@ export class PersonalChatComponent implements OnInit, AfterViewChecked {
     }
   }
 
+  onFileSelected(event: any) {
+    const file = event.target.files[0];
+    if (file) this.selectedFile = file;
+  }
+
+  uploadFile() {
+    if (!this.selectedFile) return;
+
+    const formData = new FormData();
+    formData.append('file', this.selectedFile);
+
+    this.http.post<any>(
+      `${environment.apiUrl}/uploads/personal/${this.chatId}`,
+      formData
+    ).subscribe(attachment => {
+      this.http.post<any>(`${environment.apiUrl}/personal/chat/${this.chatId}/messages`, {
+        content: `📎 [${attachment.file_name}](${environment.apiUrl}${attachment.file_path})`
+      }).subscribe(message => {
+        this.messages.push(message);
+        this.selectedFile = null;
+        this.shouldScrollToBottom = true;
+      });
+    });
+  }
+
   startEdit(message: any) {
     this.editingMessage = message;
     this.messageText = message.content;
@@ -113,6 +144,28 @@ export class PersonalChatComponent implements OnInit, AfterViewChecked {
     this.http.delete(`${environment.apiUrl}/personal/message/${message.id}`).subscribe(() => {
       this.messages = this.messages.filter(m => m.id !== message.id);
     });
+  }
+
+  isFileMessage(content: string) {
+    return content?.startsWith('📎 [');
+  }
+
+  getFileName(content: string) {
+    const match = content?.match(/\[(.+?)\]/);
+    return match ? match[1] : '';
+  }
+
+  getFileUrl(content: string) {
+    const match = content?.match(/\((.+?)\)/);
+    return match ? match[1] : '';
+  }
+
+  isImageFile(filename: string) {
+    return /\.(jpg|jpeg|png|gif|webp)$/i.test(filename);
+  }
+
+  openLink(url: string) {
+    window.open(url, '_blank');
   }
 
   onEnterPress(event: Event) {

@@ -1,4 +1,8 @@
-import { Injectable, ForbiddenException, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  ForbiddenException,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Attachment } from './attachment.entity';
@@ -15,11 +19,7 @@ export class UploadsService {
     private membersRepo: Repository<RoomMember>,
   ) {}
 
-  async uploadFile(
-    userId: string,
-    roomId: string,
-    file: Express.Multer.File,
-  ) {
+  async uploadFile(userId: string, roomId: string, file: Express.Multer.File) {
     const member = await this.membersRepo.findOne({
       where: { room_id: roomId, user_id: userId },
     });
@@ -67,5 +67,22 @@ export class UploadsService {
 
     await this.attachmentsRepo.delete(fileId);
     return { message: 'File deleted' };
+  }
+
+  async uploadPersonalFile(
+    userId: string,
+    chatId: string,
+    file: Express.Multer.File,
+  ) {
+    const attachment = this.attachmentsRepo.create({
+      file_name: file.originalname,
+      file_path: `/uploads/${file.filename}`,
+      file_size: file.size,
+      mime_type: file.mimetype,
+      uploaded_by: userId,
+    });
+
+    await this.attachmentsRepo.save(attachment);
+    return attachment;
   }
 }

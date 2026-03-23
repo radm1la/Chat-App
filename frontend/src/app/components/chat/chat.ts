@@ -70,7 +70,7 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
     private chatService: ChatService,
     private roomsService: RoomsService,
     private presenceService: PresenceService,
-    private http: HttpClient
+    private http: HttpClient,
   ) {}
 
   ngOnInit() {
@@ -270,5 +270,27 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
         );
         this.selectedFile = null;
       });
+  }
+
+  openLink(url: string) {
+    window.open(url, '_blank');
+  }
+
+  isFileMessage(content: string) {
+    return content?.startsWith('📎 [');
+  }
+
+  getFileName(content: string) {
+    const match = content?.match(/\[(.+?)\]/);
+    return match ? match[1] : '';
+  }
+
+  getFileUrl(content: string) {
+    const match = content?.match(/\((.+?)\)/);
+    return match ? match[1] : '';
+  }
+
+  isImageFile(filename: string) {
+    return /\.(jpg|jpeg|png|gif|webp)$/i.test(filename);
   }
 }
