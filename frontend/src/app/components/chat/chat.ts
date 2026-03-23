@@ -61,6 +61,9 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
   selectedMember: any = null;
   showBannedUsers = false;
   bannedUsers: any[] = [];
+  inviteUsername = '';
+  inviteSuccess = '';
+  inviteError = '';
 
   newRoom = {
     name: '',
@@ -365,5 +368,23 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
     if (this.isJoined(room)) {
       this.selectRoom(room);
     }
+  }
+
+  inviteUser() {
+    this.inviteSuccess = '';
+    this.inviteError = '';
+
+    this.roomsService.inviteUser(this.selectedRoom.id, this.inviteUsername).subscribe({
+      next: () => {
+        this.inviteSuccess = 'User invited successfully!';
+        this.inviteUsername = '';
+        this.loadMembers();
+        setTimeout(() => (this.inviteSuccess = ''), 3000);
+      },
+      error: (err) => {
+        this.inviteError = err.error?.message || 'Failed to invite user';
+        setTimeout(() => (this.inviteError = ''), 3000);
+      },
+    });
   }
 }

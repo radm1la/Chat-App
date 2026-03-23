@@ -46,7 +46,6 @@
         </div>
 
         <!-- Public Rooms -->
-        <!-- Public Rooms -->
         <div class="sidebar-section">
           <div class="section-header">
             <span>Public Rooms</span>
@@ -206,6 +205,19 @@
         >
           ⋮
         </button>
+      </div>
+
+      <!-- Invite to private room -->
+      <div class="invite-section" *ngIf="selectedRoom?.is_private && isAdminInRoom()">
+        <div class="section-header">
+          <span>Invite User</span>
+        </div>
+        <div class="invite-form">
+          <input type="text" [(ngModel)]="inviteUsername" placeholder="Enter username..." />
+          <button (click)="inviteUser()">Invite</button>
+        </div>
+        <p class="invite-success" *ngIf="inviteSuccess">{{ inviteSuccess }}</p>
+        <p class="invite-error" *ngIf="inviteError">{{ inviteError }}</p>
       </div>
 
       <!-- Room actions -->
