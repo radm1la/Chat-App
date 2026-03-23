@@ -136,3 +136,56 @@ hr {
   font-size: 0.9rem;
   margin-bottom: 0.5rem;
 }
+
+.session-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem;
+  background: #0f3460;
+  border-radius: 8px;
+  margin-top: 0.75rem;
+}
+
+.session-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.session-browser {
+  color: #fff;
+  font-size: 0.9rem;
+}
+
+.session-ip {
+  color: #aaa;
+  font-size: 0.8rem;
+}
+
+.session-date {
+  color: #666;
+  font-size: 0.75rem;
+}
+
+.remove-btn {
+  padding: 0.4rem 0.8rem;
+  background: transparent;
+  border: 1px solid #e94560;
+  color: #e94560;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.8rem;
+}
+
+.remove-btn:hover {
+  background: #e94560;
+  color: #fff;
+}
+
+.empty {
+  text-align: center;
+  color: #666;
+  padding: 1rem;
+  font-size: 0.85rem;
+}

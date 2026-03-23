@@ -19,6 +19,22 @@
     </div>
 
     <hr />
+    <!-- Sessions -->
+    <div class="section">
+      <h4>Active Sessions</h4>
+      <button class="save-btn" (click)="loadSessions()">Refresh Sessions</button>
+      <div class="session-item" *ngFor="let session of sessions">
+        <div class="session-info">
+          <span class="session-browser">{{ formatUserAgent(session.user_agent) }}</span>
+          <span class="session-ip">{{ session.ip_address }}</span>
+          <span class="session-date">{{ session.created_at | date: 'dd/MM/yyyy HH:mm' }}</span>
+        </div>
+        <button class="remove-btn" (click)="deleteSession(session)">Logout</button>
+      </div>
+      <div class="empty" *ngIf="sessions.length === 0">No active sessions</div>
+    </div>
+
+    <hr />
 
     <!-- Delete Account -->
     <div class="section danger-section">
