@@ -1,4 +1,14 @@
-import { Controller, Post, Get, Delete, Body, Param, Query, Request, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Get,
+  Delete,
+  Body,
+  Param,
+  Query,
+  Request,
+  UseGuards,
+} from '@nestjs/common';
 import { RoomsService } from './rooms.service';
 import { JwtAuthGuard } from '../auth/jwt.guard';
 import { CreateRoomDto, InviteUserDto } from './rooms.dto';
@@ -39,17 +49,57 @@ export class RoomsController {
   }
 
   @Post(':id/invite')
-  inviteUser(@Request() req, @Param('id') roomId: string, @Body() dto: InviteUserDto) {
+  inviteUser(
+    @Request() req,
+    @Param('id') roomId: string,
+    @Body() dto: InviteUserDto,
+  ) {
     return this.roomsService.inviteUser(roomId, req.user.sub, dto);
   }
 
   @Post(':id/ban/:userId')
-  banMember(@Request() req, @Param('id') roomId: string, @Param('userId') targetId: string) {
+  banMember(
+    @Request() req,
+    @Param('id') roomId: string,
+    @Param('userId') targetId: string,
+  ) {
     return this.roomsService.banMember(roomId, req.user.sub, targetId);
   }
 
   @Delete(':id')
   deleteRoom(@Request() req, @Param('id') roomId: string) {
     return this.roomsService.deleteRoom(roomId, req.user.sub);
+  }
+
+  @Get(':id/banned')
+  getBannedUsers(@Param('id') roomId: string) {
+    return this.roomsService.getBannedUsers(roomId);
+  }
+
+  @Delete(':id/ban/:userId')
+  unbanMember(
+    @Request() req,
+    @Param('id') roomId: string,
+    @Param('userId') userId: string,
+  ) {
+    return this.roomsService.unbanMember(roomId, req.user.sub, userId);
+  }
+
+  @Post(':id/admin/:userId')
+  makeAdmin(
+    @Request() req,
+    @Param('id') roomId: string,
+    @Param('userId') userId: string,
+  ) {
+    return this.roomsService.makeAdmin(roomId, req.user.sub, userId);
+  }
+
+  @Delete(':id/admin/:userId')
+  removeAdmin(
+    @Request() req,
+    @Param('id') roomId: string,
+    @Param('userId') userId: string,
+  ) {
+    return this.roomsService.removeAdmin(roomId, req.user.sub, userId);
   }
 }

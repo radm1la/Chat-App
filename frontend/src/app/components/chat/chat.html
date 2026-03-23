@@ -46,6 +46,7 @@
         </div>
 
         <!-- Public Rooms -->
+        <!-- Public Rooms -->
         <div class="sidebar-section">
           <div class="section-header">
             <span>Public Rooms</span>
@@ -58,8 +59,14 @@
               (input)="searchRooms()"
             />
           </div>
-          <div class="room-item" *ngFor="let room of publicRooms" (click)="joinAndSelectRoom(room)">
-            <span class="room-name"># {{ room.name }}</span>
+          <div class="room-item" *ngFor="let room of publicRooms">
+            <span class="room-name" (click)="previewRoom(room)"># {{ room.name }}</span>
+            <button class="join-btn" *ngIf="!isJoined(room)" (click)="joinAndSelectRoom(room)">
+              Join
+            </button>
+            <button class="join-btn active" *ngIf="isJoined(room)" (click)="selectRoom(room)">
+              Open
+            </button>
           </div>
         </div>
       </ng-container>
@@ -139,8 +146,10 @@
 
         <!-- Reply preview -->
         <div class="reply-bar" *ngIf="replyingTo">
-          <span>↩ Replying to {{ replyingTo.sender?.username }}:
-            {{ replyingTo.content | slice: 0 : 50 }}</span>
+          <span
+            >↩ Replying to {{ replyingTo.sender?.username }}:
+            {{ replyingTo.content | slice: 0 : 50 }}</span
+          >
           <button (click)="replyingTo = null">✕</button>
         </div>
 
@@ -184,8 +193,63 @@
           <span class="member-status" [class]="getPresenceStatus(member.user?.id)">
             {{ getPresenceStatus(member.user?.id) }}
           </span>
+          <span class="admin-tag" *ngIf="member.is_admin">admin</span>
         </div>
+        <button
+          class="member-menu-btn"
+          *ngIf="
+            isAdminInRoom() &&
+            member.user?.id !== currentUser?.id &&
+            member.user?.id !== selectedRoom?.owner_id
+          "
+          (click)="openMemberMenu(member)"
+        >
+          ⋮
+        </button>
       </div>
+
+      <!-- Room actions -->
+      <div class="room-actions" *ngIf="isAdminInRoom()">
+        <button class="danger-btn" (click)="showBannedUsers = true; loadBannedUsers()">
+          Banned Users
+        </button>
+        <button class="danger-btn" *ngIf="isOwnerOfRoom()" (click)="confirmDeleteRoom()">
+          Delete Room
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Member action modal -->
+<div class="modal-overlay" *ngIf="selectedMember" (click)="selectedMember = null">
+  <div class="modal small-modal" (click)="$event.stopPropagation()">
+    <h3>{{ selectedMember.user?.username }}</h3>
+
+    <div class="action-list">
+      <button (click)="toggleAdmin(selectedMember)">
+        {{ selectedMember.is_admin ? 'Remove Admin' : 'Make Admin' }}
+      </button>
+      <button class="danger" (click)="banMember(selectedMember)">Ban from room</button>
+    </div>
+
+    <div class="modal-actions">
+      <button class="cancel-btn" (click)="selectedMember = null">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- Banned users modal -->
+<div class="modal-overlay" *ngIf="showBannedUsers" (click)="showBannedUsers = false">
+  <div class="modal" (click)="$event.stopPropagation()">
+    <h3>Banned Users</h3>
+    <div class="empty" *ngIf="bannedUsers.length === 0">No banned users</div>
+    <div class="banned-item" *ngFor="let ban of bannedUsers">
+      <span>{{ ban.user?.username }}</span>
+      <button (click)="unbanMember(ban)">Unban</button>
+    </div>
+    <div class="modal-actions">
+      <button class="cancel-btn" (click)="showBannedUsers = false">Close</button>
     </div>
   </div>
 </div>

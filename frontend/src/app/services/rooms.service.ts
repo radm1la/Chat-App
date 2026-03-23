@@ -36,4 +36,27 @@ export class RoomsService {
   inviteUser(roomId: string, username: string) {
     return this.http.post(`${this.apiUrl}/rooms/${roomId}/invite`, { username });
   }
+
+  banMember(roomId: string, userId: string) {
+    return this.http.post(`${this.apiUrl}/rooms/${roomId}/ban/${userId}`, {});
+  }
+
+  getBannedUsers(roomId: string) {
+    return this.http.get<any[]>(`${this.apiUrl}/rooms/${roomId}/banned`);
+  }
+
+  unbanMember(roomId: string, userId: string) {
+    return this.http.delete(`${this.apiUrl}/rooms/${roomId}/ban/${userId}`);
+  }
+
+  makeAdmin(roomId: string, userId: string) {
+    return this.http.post(`${this.apiUrl}/rooms/${roomId}/admin/${userId}`, {});
+  }
+
+  removeAdmin(roomId: string, userId: string) {
+    return this.http.delete(`${this.apiUrl}/rooms/${roomId}/admin/${userId}`);
+  }
+  deleteRoom(roomId: string) {
+    return this.http.delete(`${this.apiUrl}/rooms/${roomId}`);
+  }
 }

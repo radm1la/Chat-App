@@ -58,6 +58,9 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
   sidebarTab = 'rooms';
   activePersonalChat: any = null;
   selectedFile: File | null = null;
+  selectedMember: any = null;
+  showBannedUsers = false;
+  bannedUsers: any[] = [];
 
   newRoom = {
     name: '',
@@ -292,5 +295,75 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
 
   isImageFile(filename: string) {
     return /\.(jpg|jpeg|png|gif|webp)$/i.test(filename);
+  }
+
+  isAdminInRoom() {
+    if (!this.selectedRoom || !this.currentUser) return false;
+    const member = this.roomMembers.find((m) => m.user_id === this.currentUser.id);
+    return member?.is_admin || false;
+  }
+
+  isOwnerOfRoom() {
+    if (!this.selectedRoom || !this.currentUser) return false;
+    return this.selectedRoom.owner_id === this.currentUser.id;
+  }
+
+  openMemberMenu(member: any) {
+    this.selectedMember = member;
+  }
+
+  banMember(member: any) {
+    this.roomsService.banMember(this.selectedRoom.id, member.user_id).subscribe(() => {
+      this.selectedMember = null;
+      this.loadMembers();
+    });
+  }
+
+  toggleAdmin(member: any) {
+    if (member.is_admin) {
+      this.roomsService.removeAdmin(this.selectedRoom.id, member.user_id).subscribe(() => {
+        this.selectedMember = null;
+        this.loadMembers();
+      });
+    } else {
+      this.roomsService.makeAdmin(this.selectedRoom.id, member.user_id).subscribe(() => {
+        this.selectedMember = null;
+        this.loadMembers();
+      });
+    }
+  }
+
+  loadBannedUsers() {
+    this.roomsService.getBannedUsers(this.selectedRoom.id).subscribe((users) => {
+      this.bannedUsers = users;
+    });
+  }
+
+  unbanMember(ban: any) {
+    this.roomsService.unbanMember(this.selectedRoom.id, ban.user_id).subscribe(() => {
+      this.loadBannedUsers();
+      this.loadMembers();
+    });
+  }
+
+  confirmDeleteRoom() {
+    if (confirm('Are you sure you want to delete this room?')) {
+      this.roomsService.deleteRoom(this.selectedRoom.id).subscribe(() => {
+        this.selectedRoom = null;
+        this.messages = [];
+        this.roomMembers = [];
+        this.loadMyRooms();
+      });
+    }
+  }
+
+  isJoined(room: any) {
+    return this.myRooms.some((m) => m.room?.id === room.id);
+  }
+
+  previewRoom(room: any) {
+    if (this.isJoined(room)) {
+      this.selectRoom(room);
+    }
   }
 }
