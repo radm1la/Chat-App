@@ -122,4 +122,11 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
       status: isAfk ? 'afk' : 'online',
     });
   }
+
+  emitMemberCountUpdate(roomId: string, memberCount: number) {
+    this.server.to(roomId).emit('room:members-changed', {
+      roomId,
+      memberCount,
+    });
+  }
 }

@@ -3,6 +3,8 @@ import {
   NotFoundException,
   ForbiddenException,
   ConflictException,
+  Inject,
+  forwardRef,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -11,6 +13,7 @@ import { RoomMember } from './room-member.entity';
 import { RoomBan } from './room-ban.entity';
 import { User } from '../users/user.entity';
 import { CreateRoomDto, InviteUserDto } from './rooms.dto';
+import { ChatGateway } from '../messages/chat.gateway';
 
 @Injectable()
 export class RoomsService {
@@ -23,6 +26,8 @@ export class RoomsService {
     private bansRepo: Repository<RoomBan>,
     @InjectRepository(User)
     private usersRepo: Repository<User>,
+    @Inject(forwardRef(() => ChatGateway))
+    private chatGateway: ChatGateway,
   ) {}
 
   async createRoom(userId: string, dto: CreateRoomDto) {
@@ -75,6 +80,11 @@ export class RoomsService {
     if (existing) throw new ConflictException('Already a member');
 
     await this.membersRepo.save({ room_id: roomId, user_id: userId });
+
+    // Emit event to notify all clients about member count change
+    const memberCount = await this.getMemberCount(roomId);
+    this.chatGateway.emitMemberCountUpdate(roomId, memberCount);
+
     return { message: 'Joined successfully' };
   }
 
@@ -85,6 +95,11 @@ export class RoomsService {
       throw new ForbiddenException('Owner cannot leave the room');
 
     await this.membersRepo.delete({ room_id: roomId, user_id: userId });
+
+    // Emit event to notify all clients about member count change
+    const memberCount = await this.getMemberCount(roomId);
+    this.chatGateway.emitMemberCountUpdate(roomId, memberCount);
+
     return { message: 'Left successfully' };
   }
 
@@ -92,6 +107,12 @@ export class RoomsService {
     return this.membersRepo.find({
       where: { room_id: roomId },
       relations: ['user'],
+    });
+  }
+
+  private async getMemberCount(roomId: string): Promise<number> {
+    return this.membersRepo.count({
+      where: { room_id: roomId },
     });
   }
 
@@ -121,6 +142,11 @@ export class RoomsService {
     if (existing) throw new ConflictException('User is already a member');
 
     await this.membersRepo.save({ room_id: roomId, user_id: user.id });
+
+    // Emit event to notify all clients about member count change
+    const memberCount = await this.getMemberCount(roomId);
+    this.chatGateway.emitMemberCountUpdate(roomId, memberCount);
+
     return { message: 'User invited successfully' };
   }
 
@@ -139,6 +165,11 @@ export class RoomsService {
       user_id: targetUserId,
       banned_by: adminId,
     });
+
+    // Emit event to notify all clients about member count change
+    const memberCount = await this.getMemberCount(roomId);
+    this.chatGateway.emitMemberCountUpdate(roomId, memberCount);
+
     return { message: 'User banned' };
   }
 
@@ -180,6 +211,10 @@ export class RoomsService {
     if (!existing) {
       await this.membersRepo.save({ room_id: roomId, user_id: targetUserId });
     }
+
+    // Emit event to notify all clients about member count change
+    const memberCount = await this.getMemberCount(roomId);
+    this.chatGateway.emitMemberCountUpdate(roomId, memberCount);
 
     return { message: 'User unbanned' };
   }

@@ -13,6 +13,7 @@ export class ChatService {
   messages$ = new BehaviorSubject<any[]>([]);
   newMessage$ = new Subject<any>();
   presenceUpdates$ = new Subject<any>();
+  memberCountUpdates$ = new Subject<any>();
 
   constructor(private http: HttpClient, private authService: AuthService) {}
 
@@ -28,6 +29,10 @@ export class ChatService {
 
     this.socket.on('presence:update', (data) => {
       this.presenceUpdates$.next(data);
+    });
+
+    this.socket.on('room:members-changed', (data) => {
+      this.memberCountUpdates$.next(data);
     });
   }
 

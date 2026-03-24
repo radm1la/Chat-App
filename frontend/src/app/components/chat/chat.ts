@@ -100,6 +100,17 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
       this.chatService.presenceUpdates$.subscribe((data) => {
         this.presenceMap[data.userId] = data.status;
       }),
+
+      this.chatService.memberCountUpdates$.subscribe((data) => {
+        if (this.selectedRoom && data.roomId === this.selectedRoom.id) {
+          this.selectedRoom.memberCount = data.memberCount;
+        }
+        // Also update the room in myRooms and publicRooms if it exists there
+        const myRoom = this.myRooms.find(r => r.room?.id === data.roomId);
+        if (myRoom) myRoom.room.memberCount = data.memberCount;
+        const publicRoom = this.publicRooms.find(r => r.id === data.roomId);
+        if (publicRoom) publicRoom.memberCount = data.memberCount;
+      }),
     );
   }
 
@@ -151,7 +162,6 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
     this.roomsService.joinRoom(room.id).subscribe({
       next: () => {
         this.loadMyRooms();
-        this.loadPublicRooms();
         this.selectRoom(room);
       },
       error: () => {
@@ -419,7 +429,6 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
         this.messages = [];
         this.roomMembers = [];
         this.loadMyRooms();
-        this.loadPublicRooms();
       },
       error: (err) => {
         alert(err.error?.message || 'Failed to leave room');

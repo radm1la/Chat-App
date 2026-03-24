@@ -16,6 +16,6 @@ import { RoomMember } from '../rooms/room-member.entity';
   ],
   controllers: [MessagesController],
   providers: [MessagesService, ChatGateway],
-  exports: [MessagesService],
+  exports: [MessagesService, ChatGateway],
 })
 export class MessagesModule {}
