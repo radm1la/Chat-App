@@ -17,15 +17,22 @@ export class ChatService {
   userBanned$ = new Subject<any>();
   userUnbanned$ = new Subject<any>();
 
-  constructor(private http: HttpClient, private authService: AuthService) {}
+  constructor(
+    private http: HttpClient,
+    private authService: AuthService,
+  ) {}
 
   connect() {
     const token = this.authService.getToken();
     this.socket = io(environment.wsUrl, {
-      auth: { token }
+      auth: { token },
     });
 
     this.socket.on('message:new', (message) => {
+      this.newMessage$.next(message);
+    });
+
+    this.socket.on('personal:message', (message) => {
       this.newMessage$.next(message);
     });
 

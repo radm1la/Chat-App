@@ -52,8 +52,12 @@ export class PersonalChatComponent implements OnInit, AfterViewChecked, OnDestro
 
     this.subscription = this.chatService.newMessage$.subscribe((message) => {
       if (message.chat_id === this.chatId) {
-        this.messages.push(message);
-        this.shouldScrollToBottom = true;
+        // avoid duplicates - check if message already exists
+        const exists = this.messages.find((m) => m.id === message.id);
+        if (!exists) {
+          this.messages.push(message);
+          this.shouldScrollToBottom = true;
+        }
       }
     });
   }

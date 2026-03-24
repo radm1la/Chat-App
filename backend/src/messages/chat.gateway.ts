@@ -18,7 +18,10 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer()
   server: Server;
 
-  private connectedUsers = new Map<string, { socketId: string; lastActive: Date }>();
+  private connectedUsers = new Map<
+    string,
+    { socketId: string; lastActive: Date }
+  >();
 
   constructor(
     private messagesService: MessagesService,
@@ -59,13 +62,19 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   }
 
   @SubscribeMessage('room:join')
-  handleJoinRoom(@ConnectedSocket() client: Socket, @MessageBody() roomId: string) {
+  handleJoinRoom(
+    @ConnectedSocket() client: Socket,
+    @MessageBody() roomId: string,
+  ) {
     client.join(roomId);
     return { success: true };
   }
 
   @SubscribeMessage('room:leave')
-  handleLeaveRoom(@ConnectedSocket() client: Socket, @MessageBody() roomId: string) {
+  handleLeaveRoom(
+    @ConnectedSocket() client: Socket,
+    @MessageBody() roomId: string,
+  ) {
     client.leave(roomId);
     return { success: true };
   }
@@ -112,7 +121,9 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
       data.roomId,
     );
 
-    this.server.to(data.roomId).emit('message:deleted', { messageId: data.messageId });
+    this.server
+      .to(data.roomId)
+      .emit('message:deleted', { messageId: data.messageId });
   }
 
   @SubscribeMessage('presence:afk')
@@ -133,8 +144,9 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   emitUserBanned(userId: string, roomId: string, roomName: string) {
     // Find the socket for the banned user
-    const userSocket = Array.from(this.connectedUsers.entries())
-      .find(([id, socketInfo]) => id === userId);
+    const userSocket = Array.from(this.connectedUsers.entries()).find(
+      ([id, socketInfo]) => id === userId,
+    );
 
     if (userSocket) {
       this.server.to(userSocket[1].socketId).emit('user:banned', {
@@ -147,8 +159,9 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   emitUserUnbanned(userId: string, roomId: string, roomName: string) {
     // Find the socket for the unbanned user
-    const userSocket = Array.from(this.connectedUsers.entries())
-      .find(([id, socketInfo]) => id === userId);
+    const userSocket = Array.from(this.connectedUsers.entries()).find(
+      ([id, socketInfo]) => id === userId,
+    );
 
     if (userSocket) {
       this.server.to(userSocket[1].socketId).emit('user:unbanned', {
@@ -156,6 +169,18 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
         roomName,
         message: `You've been unbanned from ${roomName}`,
       });
+    }
+  }
+
+  emitPersonalMessage(userId1: string, userId2: string, message: any) {
+    const user1Socket = this.connectedUsers.get(userId1);
+    const user2Socket = this.connectedUsers.get(userId2);
+
+    if (user1Socket) {
+      this.server.to(user1Socket.socketId).emit('personal:message', message);
+    }
+    if (user2Socket) {
+      this.server.to(user2Socket.socketId).emit('personal:message', message);
     }
   }
 }
