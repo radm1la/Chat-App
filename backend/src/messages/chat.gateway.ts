@@ -129,4 +129,18 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
       memberCount,
     });
   }
+
+  emitUserBanned(userId: string, roomId: string, roomName: string) {
+    // Find the socket for the banned user
+    const userSocket = Array.from(this.connectedUsers.entries())
+      .find(([id, socketInfo]) => id === userId);
+
+    if (userSocket) {
+      this.server.to(userSocket[1].socketId).emit('user:banned', {
+        roomId,
+        roomName,
+        message: `You've been banned from ${roomName}`,
+      });
+    }
+  }
 }

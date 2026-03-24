@@ -170,6 +170,9 @@ export class RoomsService {
     const memberCount = await this.getMemberCount(roomId);
     this.chatGateway.emitMemberCountUpdate(roomId, memberCount);
 
+    // Emit targeted event to the banned user
+    this.chatGateway.emitUserBanned(targetUserId, roomId, room.name);
+
     return { message: 'User banned' };
   }
 

@@ -111,6 +111,22 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
         const publicRoom = this.publicRooms.find(r => r.id === data.roomId);
         if (publicRoom) publicRoom.memberCount = data.memberCount;
       }),
+
+      this.chatService.userBanned$.subscribe((data) => {
+        // Remove the banned room from user's room list
+        this.myRooms = this.myRooms.filter(r => r.room?.id !== data.roomId);
+
+        // If the banned room is currently selected, clear it
+        if (this.selectedRoom && this.selectedRoom.id === data.roomId) {
+          this.selectedRoom = null;
+          this.messages = [];
+          this.roomMembers = [];
+          this.chatService.leaveRoom(data.roomId);
+        }
+
+        // Show notification
+        alert(data.message);
+      }),
     );
   }
 

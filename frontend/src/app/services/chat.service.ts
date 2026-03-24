@@ -14,6 +14,7 @@ export class ChatService {
   newMessage$ = new Subject<any>();
   presenceUpdates$ = new Subject<any>();
   memberCountUpdates$ = new Subject<any>();
+  userBanned$ = new Subject<any>();
 
   constructor(private http: HttpClient, private authService: AuthService) {}
 
@@ -33,6 +34,10 @@ export class ChatService {
 
     this.socket.on('room:members-changed', (data) => {
       this.memberCountUpdates$.next(data);
+    });
+
+    this.socket.on('user:banned', (data) => {
+      this.userBanned$.next(data);
     });
   }
 
