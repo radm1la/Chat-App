@@ -21,6 +21,10 @@ export class RoomBan {
   @Column({ nullable: true })
   banned_by: string;
 
+  @ManyToOne(() => User)
+  @JoinColumn({ name: 'banned_by' })
+  banner: User;
+
   @CreateDateColumn()
   created_at: Date;
 }

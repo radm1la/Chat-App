@@ -806,3 +806,18 @@
   font-size: 0.7rem;
   color: #666;
 }
+
+.banned-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.banned-name {
+  color: #ccc;
+  font-size: 0.9rem;
+}
+
+.banned-by {
+  color: #666;
+  font-size: 0.75rem;
+}

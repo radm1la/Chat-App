@@ -162,7 +162,7 @@ export class RoomsService {
   async getBannedUsers(roomId: string) {
     return this.bansRepo.find({
       where: { room_id: roomId },
-      relations: ['user'],
+      relations: ['user', 'banner'],
     });
   }
 

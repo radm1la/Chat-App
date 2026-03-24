@@ -261,7 +261,10 @@
     <h3>Banned Users</h3>
     <div class="empty" *ngIf="bannedUsers.length === 0">No banned users</div>
     <div class="banned-item" *ngFor="let ban of bannedUsers">
-      <span>{{ ban.user?.username }}</span>
+      <div class="banned-info">
+        <span class="banned-name">{{ ban.user?.username }}</span>
+        <span class="banned-by">banned by {{ ban.banner?.username || 'unknown' }}</span>
+      </div>
       <button (click)="unbanMember(ban)">Unban</button>
     </div>
     <div class="modal-actions">
