@@ -124,7 +124,8 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   }
 
   emitMemberCountUpdate(roomId: string, memberCount: number) {
-    this.server.to(roomId).emit('room:members-changed', {
+    // Send to all connected users since member count affects public rooms list
+    this.server.emit('room:members-changed', {
       roomId,
       memberCount,
     });
@@ -140,6 +141,20 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
         roomId,
         roomName,
         message: `You've been banned from ${roomName}`,
+      });
+    }
+  }
+
+  emitUserUnbanned(userId: string, roomId: string, roomName: string) {
+    // Find the socket for the unbanned user
+    const userSocket = Array.from(this.connectedUsers.entries())
+      .find(([id, socketInfo]) => id === userId);
+
+    if (userSocket) {
+      this.server.to(userSocket[1].socketId).emit('user:unbanned', {
+        roomId,
+        roomName,
+        message: `You've been unbanned from ${roomName}`,
       });
     }
   }

@@ -127,6 +127,14 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
         // Show notification
         alert(data.message);
       }),
+
+      this.chatService.userUnbanned$.subscribe((data) => {
+        // Add the unbanned room to user's room list
+        this.loadMyRooms(); // Reload to get the updated membership
+
+        // Show notification
+        alert(data.message);
+      }),
     );
   }
 

@@ -219,6 +219,13 @@ export class RoomsService {
     const memberCount = await this.getMemberCount(roomId);
     this.chatGateway.emitMemberCountUpdate(roomId, memberCount);
 
+    // Get room name for notification
+    const room = await this.roomsRepo.findOne({ where: { id: roomId } });
+    if (room) {
+      // Emit targeted event to the unbanned user
+      this.chatGateway.emitUserUnbanned(targetUserId, roomId, room.name);
+    }
+
     return { message: 'User unbanned' };
   }
 
