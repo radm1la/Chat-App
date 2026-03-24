@@ -132,3 +132,22 @@
 
 .error { color: #e94560; font-size: 0.85rem; }
 .success { color: #4caf50; font-size: 0.85rem; }
+
+.friend-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.unread-badge {
+  background: #e94560;
+  color: #fff;
+  border-radius: 50%;
+  width: 18px;
+  height: 18px;
+  font-size: 0.7rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}

@@ -65,6 +65,7 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
   inviteSuccess = '';
   inviteError = '';
   createRoomError = '';
+  unreadPersonalCounts: { [key: string]: number } = {};
 
   newRoom = {
     name: '',
@@ -89,11 +90,20 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
 
     this.subscriptions.push(
       this.chatService.newMessage$.subscribe((message) => {
-        if (this.selectedRoom && message.room_id === this.selectedRoom.id) {
-          this.messages.push(message);
-          this.shouldScrollToBottom = true;
-        } else {
-          this.unreadCounts[message.room_id] = (this.unreadCounts[message.room_id] || 0) + 1;
+        if (message.room_id) {
+          // Room message
+          if (this.selectedRoom && message.room_id === this.selectedRoom.id) {
+            this.messages.push(message);
+            this.shouldScrollToBottom = true;
+          } else {
+            this.unreadCounts[message.room_id] = (this.unreadCounts[message.room_id] || 0) + 1;
+          }
+        } else if (message.chat_id) {
+          // Personal message
+          if (!this.activePersonalChat || this.activePersonalChat.id !== message.sender_id) {
+            const senderId = message.sender_id;
+            this.unreadPersonalCounts[senderId] = (this.unreadPersonalCounts[senderId] || 0) + 1;
+          }
         }
       }),
 
@@ -337,6 +347,7 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
 
   startPersonalChat(user: any) {
     this.activePersonalChat = user;
+    this.unreadPersonalCounts[user.id] = 0;
   }
 
   onFileSelected(event: any) {

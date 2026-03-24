@@ -1,7 +1,9 @@
 <div class="friends-panel">
   <!-- Tabs -->
   <div class="tabs">
-    <button [class.active]="activeTab === 'friends'" (click)="activeTab = 'friends'">Friends</button>
+    <button [class.active]="activeTab === 'friends'" (click)="activeTab = 'friends'">
+      Friends
+    </button>
     <button [class.active]="activeTab === 'pending'" (click)="activeTab = 'pending'; loadPending()">
       Pending
       <span class="badge" *ngIf="pendingCount > 0">{{ pendingCount }}</span>
@@ -18,6 +20,9 @@
         <span class="friend-name">{{ friend.user?.username }}</span>
       </div>
       <div class="friend-actions">
+        <span class="unread-badge" *ngIf="getUnreadCount(friend.user?.id) > 0">
+          {{ getUnreadCount(friend.user?.id) }}
+        </span>
         <button class="msg-btn" (click)="openChat(friend)">💬</button>
         <button class="remove-btn" (click)="removeFriend(friend)">✕</button>
       </div>
@@ -42,11 +47,7 @@
 
   <!-- Add friend -->
   <div *ngIf="activeTab === 'add'" class="add-friend">
-    <input 
-      type="text" 
-      [(ngModel)]="searchUsername" 
-      placeholder="Enter username..."
-    />
+    <input type="text" [(ngModel)]="searchUsername" placeholder="Enter username..." />
     <button (click)="sendRequest()">Send Request</button>
     <p class="error" *ngIf="error">{{ error }}</p>
     <p class="success" *ngIf="success">{{ success }}</p>

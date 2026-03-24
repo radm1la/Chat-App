@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, OnDestroy, Output, EventEmitter, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
@@ -15,6 +15,7 @@ import { Subscription } from 'rxjs';
 })
 export class FriendsComponent implements OnInit, OnDestroy {
   @Output() openPersonalChat = new EventEmitter<any>();
+  @Input() unreadPersonalCounts: { [key: string]: number } = {};
 
   activeTab = 'friends';
   friends: any[] = [];
@@ -65,6 +66,10 @@ export class FriendsComponent implements OnInit, OnDestroy {
       this.pendingRequests = requests;
       this.pendingCount = requests.length;
     });
+  }
+
+  getUnreadCount(userId: string) {
+    return this.unreadPersonalCounts[userId] || 0;
   }
 
   sendRequest() {

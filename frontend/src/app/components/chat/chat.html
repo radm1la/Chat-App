@@ -73,7 +73,7 @@
 
       <!-- Friends tab -->
       <ng-container *ngIf="sidebarTab === 'friends'">
-        <app-friends (openPersonalChat)="startPersonalChat($event)" />
+        <app-friends (openPersonalChat)="startPersonalChat($event)" [unreadPersonalCounts]="unreadPersonalCounts"/>
       </ng-container>
     </div>
 
