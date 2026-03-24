@@ -152,8 +152,21 @@ export class PersonalService {
     if (message.sender_id !== userId)
       throw new ForbiddenException('Not your message');
 
+    const chat = await this.chatsRepo.findOne({
+      where: { id: message.chat_id },
+    });
+
     message.is_deleted = true;
     await this.messagesRepo.save(message);
+
+    if (chat) {
+      this.chatGateway.emitPersonalMessageDeleted(
+        chat.user1_id,
+        chat.user2_id,
+        messageId,
+      );
+    }
+
     return { message: 'Deleted' };
   }
 }

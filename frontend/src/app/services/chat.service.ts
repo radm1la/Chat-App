@@ -18,6 +18,8 @@ export class ChatService {
   userUnbanned$ = new Subject<any>();
   messageDeleted$ = new Subject<any>();
   messageEdited$ = new Subject<any>();
+  personalMessageDeleted$ = new Subject<any>();
+  personalMessageEdited$ = new Subject<any>();
 
   constructor(
     private http: HttpClient,
@@ -60,6 +62,14 @@ export class ChatService {
 
     this.socket.on('message:edited', (data) => {
       this.messageEdited$.next(data);
+    });
+
+    this.socket.on('personal:message:deleted', (data) => {
+      this.personalMessageDeleted$.next(data);
+    });
+
+    this.socket.on('personal:message:edited', (data) => {
+      this.personalMessageEdited$.next(data);
     });
   }
 

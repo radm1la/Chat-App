@@ -8,6 +8,8 @@ import {
   ViewChild,
   ElementRef,
   AfterViewChecked,
+  OnChanges,
+  SimpleChanges,
 } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -24,7 +26,7 @@ import { Subscription } from 'rxjs';
   templateUrl: './personal-chat.html',
   styleUrl: './personal-chat.css',
 })
-export class PersonalChatComponent implements OnInit, AfterViewChecked, OnDestroy {
+export class PersonalChatComponent implements OnInit, AfterViewChecked, OnDestroy, OnChanges {
   @Input() user: any;
   @Output() closed = new EventEmitter<void>();
   @ViewChild('messagesArea') messagesArea!: ElementRef;
@@ -39,6 +41,7 @@ export class PersonalChatComponent implements OnInit, AfterViewChecked, OnDestro
   selectedFile: File | null = null;
   private shouldScrollToBottom = true;
   private subscription!: Subscription;
+  private deletedSubscription!: Subscription;
 
   constructor(
     private http: HttpClient,
@@ -52,7 +55,6 @@ export class PersonalChatComponent implements OnInit, AfterViewChecked, OnDestro
 
     this.subscription = this.chatService.newMessage$.subscribe((message) => {
       if (message.chat_id === this.chatId) {
-        // avoid duplicates - check if message already exists
         const exists = this.messages.find((m) => m.id === message.id);
         if (!exists) {
           this.messages.push(message);
@@ -60,6 +62,22 @@ export class PersonalChatComponent implements OnInit, AfterViewChecked, OnDestro
         }
       }
     });
+
+    this.deletedSubscription = this.chatService.personalMessageDeleted$.subscribe((data) => {
+      this.messages = this.messages.filter((m) => m.id !== data.messageId);
+    });
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['user'] && !changes['user'].firstChange) {
+      this.messages = [];
+      this.chatId = '';
+      this.currentPage = 1;
+      this.messageText = '';
+      this.editingMessage = null;
+      this.selectedFile = null;
+      this.initChat();
+    }
   }
 
   ngAfterViewChecked() {
@@ -71,6 +89,7 @@ export class PersonalChatComponent implements OnInit, AfterViewChecked, OnDestro
 
   ngOnDestroy() {
     this.subscription?.unsubscribe();
+    this.deletedSubscription?.unsubscribe();
   }
 
   initChat() {
@@ -126,15 +145,13 @@ export class PersonalChatComponent implements OnInit, AfterViewChecked, OnDestro
           this.messageText = '';
         });
     } else {
+      const text = this.messageText;
+      this.messageText = '';
       this.http
         .post<any>(`${environment.apiUrl}/personal/chat/${this.chatId}/messages`, {
-          content: this.messageText,
+          content: text,
         })
-        .subscribe((message) => {
-          this.messages.push(message);
-          this.messageText = '';
-          this.shouldScrollToBottom = true;
-        });
+        .subscribe();
     }
   }
 
@@ -156,11 +173,9 @@ export class PersonalChatComponent implements OnInit, AfterViewChecked, OnDestro
           .post<any>(`${environment.apiUrl}/personal/chat/${this.chatId}/messages`, {
             content: `📎 [${attachment.file_name}](${environment.apiUrl}${attachment.file_path})`,
           })
-          .subscribe((message) => {
-            this.messages.push(message);
-            this.selectedFile = null;
-            this.shouldScrollToBottom = true;
-          });
+          .subscribe();
+        this.selectedFile = null;
+        this.shouldScrollToBottom = true;
       });
   }
 
@@ -170,9 +185,7 @@ export class PersonalChatComponent implements OnInit, AfterViewChecked, OnDestro
   }
 
   deleteMessage(message: any) {
-    this.http.delete(`${environment.apiUrl}/personal/message/${message.id}`).subscribe(() => {
-      this.messages = this.messages.filter((m) => m.id !== message.id);
-    });
+    this.http.delete(`${environment.apiUrl}/personal/message/${message.id}`).subscribe();
   }
 
   isFileMessage(content: string) {

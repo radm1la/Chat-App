@@ -1,4 +1,15 @@
-import { Controller, Post, Get, Body, Param, Query, Request, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Get,
+  Body,
+  Param,
+  Query,
+  Request,
+  UseGuards,
+  Patch,
+  Delete,
+} from '@nestjs/common';
 import { PersonalService } from './personal.service';
 import { JwtAuthGuard } from '../auth/jwt.guard';
 
@@ -32,6 +43,29 @@ export class PersonalController {
     @Request() req,
     @Body() body: { content: string; replyTo?: string },
   ) {
-    return this.personalService.sendMessage(chatId, req.user.sub, body.content, body.replyTo);
+    return this.personalService.sendMessage(
+      chatId,
+      req.user.sub,
+      body.content,
+      body.replyTo,
+    );
+  }
+
+  @Delete('message/:messageId')
+  deleteMessage(@Request() req, @Param('messageId') messageId: string) {
+    return this.personalService.deleteMessage(messageId, req.user.sub);
+  }
+
+  @Patch('message/:messageId')
+  editMessage(
+    @Request() req,
+    @Param('messageId') messageId: string,
+    @Body() body: { content: string },
+  ) {
+    return this.personalService.editMessage(
+      messageId,
+      req.user.sub,
+      body.content,
+    );
   }
 }
