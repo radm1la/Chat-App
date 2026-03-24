@@ -21,6 +21,9 @@ export class ChatService {
   personalMessageDeleted$ = new Subject<any>();
   personalMessageEdited$ = new Subject<any>();
   adminChanged$ = new Subject<any>();
+  friendRequest$ = new Subject<any>();
+  friendAccepted$ = new Subject<any>();
+  friendRemoved$ = new Subject<any>();
 
   constructor(
     private http: HttpClient,
@@ -75,6 +78,18 @@ export class ChatService {
 
     this.socket.on('room:admin-changed', (data) => {
       this.adminChanged$.next(data);
+    });
+
+    this.socket.on('friend:request', (data) => {
+      this.friendRequest$.next(data);
+    });
+
+    this.socket.on('friend:accepted', () => {
+      this.friendAccepted$.next(null);
+    });
+
+    this.socket.on('friend:removed', () => {
+      this.friendRemoved$.next(null);
     });
   }
 

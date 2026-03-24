@@ -1,9 +1,17 @@
-import { Injectable, NotFoundException, ConflictException, ForbiddenException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  ConflictException,
+  ForbiddenException,
+  Inject,
+  forwardRef,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Friend } from './friend.entity';
 import { UserBan } from './user-ban.entity';
 import { User } from '../users/user.entity';
+import { ChatGateway } from '../messages/chat.gateway';
 
 @Injectable()
 export class FriendsService {
@@ -14,18 +22,21 @@ export class FriendsService {
     private bansRepo: Repository<UserBan>,
     @InjectRepository(User)
     private usersRepo: Repository<User>,
+    @Inject(forwardRef(() => ChatGateway))
+    private chatGateway: ChatGateway,
   ) {}
 
   async sendRequest(senderId: string, username: string) {
     const receiver = await this.usersRepo.findOne({ where: { username } });
     if (!receiver) throw new NotFoundException('User not found');
-    if (receiver.id === senderId) throw new ForbiddenException('Cannot add yourself');
+    if (receiver.id === senderId)
+      throw new ForbiddenException('Cannot add yourself');
 
     const banned = await this.bansRepo.findOne({
       where: [
         { banner_id: senderId, banned_id: receiver.id },
         { banner_id: receiver.id, banned_id: senderId },
-      ]
+      ],
     });
     if (banned) throw new ForbiddenException('Cannot send request');
 
@@ -33,7 +44,7 @@ export class FriendsService {
       where: [
         { sender_id: senderId, receiver_id: receiver.id },
         { sender_id: receiver.id, receiver_id: senderId },
-      ]
+      ],
     });
     if (existing) throw new ConflictException('Request already exists');
 
@@ -44,23 +55,40 @@ export class FriendsService {
     });
 
     await this.friendsRepo.save(request);
+
+    const savedRequest = await this.friendsRepo.findOne({
+      where: { id: request.id },
+      relations: ['sender'],
+    });
+
+    this.chatGateway.emitFriendRequest(receiver.id, savedRequest);
+
     return { message: 'Friend request sent' };
   }
 
   async acceptRequest(userId: string, requestId: string) {
-    const request = await this.friendsRepo.findOne({ where: { id: requestId } });
+    const request = await this.friendsRepo.findOne({
+      where: { id: requestId },
+    });
     if (!request) throw new NotFoundException('Request not found');
-    if (request.receiver_id !== userId) throw new ForbiddenException('Not your request');
+    if (request.receiver_id !== userId)
+      throw new ForbiddenException('Not your request');
 
     request.status = 'accepted';
     await this.friendsRepo.save(request);
+
+    this.chatGateway.emitFriendAccepted(request.sender_id);
+
     return { message: 'Friend request accepted' };
   }
 
   async declineRequest(userId: string, requestId: string) {
-    const request = await this.friendsRepo.findOne({ where: { id: requestId } });
+    const request = await this.friendsRepo.findOne({
+      where: { id: requestId },
+    });
     if (!request) throw new NotFoundException('Request not found');
-    if (request.receiver_id !== userId) throw new ForbiddenException('Not your request');
+    if (request.receiver_id !== userId)
+      throw new ForbiddenException('Not your request');
 
     await this.friendsRepo.delete(requestId);
     return { message: 'Friend request declined' };
@@ -75,7 +103,7 @@ export class FriendsService {
       relations: ['sender', 'receiver'],
     });
 
-    return friends.map(f => {
+    return friends.map((f) => {
       const friend = f.sender_id === userId ? f.receiver : f.sender;
       return {
         id: f.id,
@@ -83,7 +111,7 @@ export class FriendsService {
           id: friend.id,
           username: friend.username,
           avatar_url: friend.avatar_url,
-        }
+        },
       };
     });
   }
@@ -100,11 +128,14 @@ export class FriendsService {
       where: [
         { sender_id: userId, receiver_id: friendId },
         { sender_id: friendId, receiver_id: userId },
-      ]
+      ],
     });
     if (!friendship) throw new NotFoundException('Friendship not found');
 
     await this.friendsRepo.delete(friendship.id);
+
+    this.chatGateway.emitFriendRemoved(userId, friendId);
+
     return { message: 'Friend removed' };
   }
 
@@ -113,18 +144,17 @@ export class FriendsService {
     if (!target) throw new NotFoundException('User not found');
 
     const existing = await this.bansRepo.findOne({
-      where: { banner_id: userId, banned_id: targetId }
+      where: { banner_id: userId, banned_id: targetId },
     });
     if (existing) throw new ConflictException('Already banned');
 
     await this.bansRepo.save({ banner_id: userId, banned_id: targetId });
 
-    // Remove friendship if exists
     const friendship = await this.friendsRepo.findOne({
       where: [
         { sender_id: userId, receiver_id: targetId },
         { sender_id: targetId, receiver_id: userId },
-      ]
+      ],
     });
     if (friendship) await this.friendsRepo.delete(friendship.id);
 
@@ -141,7 +171,7 @@ export class FriendsService {
       where: [
         { banner_id: userId, banned_id: targetId },
         { banner_id: targetId, banned_id: userId },
-      ]
+      ],
     });
     return !!ban;
   }

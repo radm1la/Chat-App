@@ -213,4 +213,30 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
       });
     }
   }
+
+  emitFriendRequest(targetUserId: string, request: any) {
+    const userSocket = this.connectedUsers.get(targetUserId);
+    if (userSocket) {
+      this.server.to(userSocket.socketId).emit('friend:request', request);
+    }
+  }
+
+  emitFriendAccepted(targetUserId: string) {
+    const userSocket = this.connectedUsers.get(targetUserId);
+    if (userSocket) {
+      this.server.to(userSocket.socketId).emit('friend:accepted');
+    }
+  }
+
+  emitFriendRemoved(userId1: string, userId2: string) {
+    const user1Socket = this.connectedUsers.get(userId1);
+    const user2Socket = this.connectedUsers.get(userId2);
+
+    if (user1Socket) {
+      this.server.to(user1Socket.socketId).emit('friend:removed');
+    }
+    if (user2Socket) {
+      this.server.to(user2Socket.socketId).emit('friend:removed');
+    }
+  }
 }
