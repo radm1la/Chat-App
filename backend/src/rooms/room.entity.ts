@@ -1,5 +1,6 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, ManyToOne, JoinColumn } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, ManyToOne, JoinColumn, OneToMany } from 'typeorm';
 import { User } from '../users/user.entity';
+import { RoomMember } from './room-member.entity';
 
 @Entity('rooms')
 export class Room {
@@ -21,6 +22,9 @@ export class Room {
   @ManyToOne(() => User)
   @JoinColumn({ name: 'owner_id' })
   owner: User;
+
+  @OneToMany(() => RoomMember, member => member.room)
+  members: RoomMember[];
 
   @CreateDateColumn()
   created_at: Date;

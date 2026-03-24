@@ -49,6 +49,7 @@ export class RoomsService {
   async getPublicRooms(search?: string) {
     const query = this.roomsRepo
       .createQueryBuilder('room')
+      .loadRelationCountAndMap('room.memberCount', 'room.members')
       .where('room.is_private = false');
 
     if (search) {

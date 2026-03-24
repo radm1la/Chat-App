@@ -795,3 +795,14 @@
 .invite-error { color: #e94560; font-size: 0.8rem; padding: 0 0.5rem; }
 
 .error { color: #e94560; font-size: 0.8rem; padding: 0 0.5rem; }
+
+.room-item-info {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.room-member-count {
+  font-size: 0.7rem;
+  color: #666;
+}

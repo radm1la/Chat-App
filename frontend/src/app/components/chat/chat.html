@@ -60,6 +60,7 @@
           </div>
           <div class="room-item" *ngFor="let room of publicRooms">
             <span class="room-name" (click)="previewRoom(room)"># {{ room.name }}</span>
+            <span class="room-member-count">{{ room.memberCount || 0 }} members</span>
             <button class="join-btn" *ngIf="!isJoined(room)" (click)="joinAndSelectRoom(room)">
               Join
             </button>
@@ -193,7 +194,9 @@
           <span class="member-status" [class]="getPresenceStatus(member.user?.id)">
             {{ getPresenceStatus(member.user?.id) }}
           </span>
-          <span class="admin-tag" *ngIf="member.is_admin">admin</span>
+          <span class="admin-tag" *ngIf="member.is_admin">
+            {{ member.user?.id === selectedRoom?.owner_id ? 'owner' : 'admin' }}
+          </span>
         </div>
         <button
           class="member-menu-btn"
