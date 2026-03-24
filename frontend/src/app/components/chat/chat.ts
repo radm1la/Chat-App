@@ -151,6 +151,7 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
     this.roomsService.joinRoom(room.id).subscribe({
       next: () => {
         this.loadMyRooms();
+        this.loadPublicRooms();
         this.selectRoom(room);
       },
       error: () => {
@@ -222,21 +223,21 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
     this.messages = this.messages.filter((m) => m.id !== message.id);
   }
 
-createRoom() {
-  this.createRoomError = '';
-  this.roomsService
-    .createRoom(this.newRoom.name, this.newRoom.description, this.newRoom.isPrivate)
-    .subscribe({
-      next: () => {
-        this.showCreateRoom = false;
-        this.newRoom = { name: '', description: '', isPrivate: false };
-        this.loadMyRooms();
-      },
-      error: (err) => {
-        this.createRoomError = err.error?.message || 'Failed to create room';
-      }
-    });
-}
+  createRoom() {
+    this.createRoomError = '';
+    this.roomsService
+      .createRoom(this.newRoom.name, this.newRoom.description, this.newRoom.isPrivate)
+      .subscribe({
+        next: () => {
+          this.showCreateRoom = false;
+          this.newRoom = { name: '', description: '', isPrivate: false };
+          this.loadMyRooms();
+        },
+        error: (err) => {
+          this.createRoomError = err.error?.message || 'Failed to create room';
+        },
+      });
+  }
   getPresenceStatus(userId: string) {
     return this.presenceMap[userId] || 'offline';
   }
@@ -407,5 +408,22 @@ createRoom() {
         }
       }
     }
+  }
+
+  leaveRoom() {
+    if (!confirm('Are you sure you want to leave this room?')) return;
+
+    this.roomsService.leaveRoom(this.selectedRoom.id).subscribe({
+      next: () => {
+        this.selectedRoom = null;
+        this.messages = [];
+        this.roomMembers = [];
+        this.loadMyRooms();
+        this.loadPublicRooms();
+      },
+      error: (err) => {
+        alert(err.error?.message || 'Failed to leave room');
+      },
+    });
   }
 }

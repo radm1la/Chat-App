@@ -151,18 +151,28 @@
 }
 
 .chat-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   padding: 1rem 1.5rem;
   border-bottom: 1px solid #0f3460;
   background: #16213e;
 }
 
-.chat-header h3 {
-  color: #fff;
+.chat-header .header-left h3 { color: #fff; }
+.chat-header .header-left p { color: #888; font-size: 0.85rem; }
+
+.leave-btn {
+  padding: 0.4rem 0.8rem;
+  background: transparent;
+  border: 1px solid #e94560;
+  color: #e94560;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.8rem;
 }
-.chat-header p {
-  color: #888;
-  font-size: 0.85rem;
-}
+
+.leave-btn:hover { background: #e94560; color: #fff; }
 
 .messages-area {
   flex: 1;
@@ -821,3 +831,4 @@
   color: #666;
   font-size: 0.75rem;
 }
+

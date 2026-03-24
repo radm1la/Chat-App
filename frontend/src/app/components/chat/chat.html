@@ -82,8 +82,19 @@
       <ng-container *ngIf="selectedRoom; else noRoom">
         <!-- Room header -->
         <div class="chat-header">
-          <h3># {{ selectedRoom.name }}</h3>
-          <p>{{ selectedRoom.description }}</p>
+          <div class="header-left">
+            <h3># {{ selectedRoom.name }}</h3>
+            <p>{{ selectedRoom.description }}</p>
+          </div>
+          <div class="header-right">
+            <button
+              class="leave-btn"
+              *ngIf="selectedRoom?.owner_id !== currentUser?.id"
+              (click)="leaveRoom()"
+            >
+              Leave Room
+            </button>
+          </div>
         </div>
 
         <!-- Messages -->
