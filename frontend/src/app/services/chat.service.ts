@@ -26,6 +26,8 @@ export class ChatService {
   friendRemoved$ = new Subject<any>();
   roomDeleted$ = new Subject<any>();
   roomCreated$ = new Subject<any>();
+  memberJoined$ = new Subject<any>();
+  memberLeft$ = new Subject<any>();
 
   constructor(
     private http: HttpClient,
@@ -100,6 +102,14 @@ export class ChatService {
 
     this.socket.on('room:created', (data) => {
       this.roomCreated$.next(data);
+    });
+
+    this.socket.on('room:member-joined', (data) => {
+      this.memberJoined$.next(data);
+    });
+
+    this.socket.on('room:member-left', (data) => {
+      this.memberLeft$.next(data);
     });
   }
 

@@ -85,7 +85,13 @@ export class RoomsService {
 
     await this.membersRepo.save({ room_id: roomId, user_id: userId });
 
-    // Emit event to notify all clients about member count change
+    const member = await this.membersRepo.findOne({
+      where: { room_id: roomId, user_id: userId },
+      relations: ['user'],
+    });
+
+    this.chatGateway.emitMemberJoined(roomId, member);
+
     const memberCount = await this.getMemberCount(roomId);
     this.chatGateway.emitMemberCountUpdate(roomId, memberCount);
 
@@ -100,7 +106,8 @@ export class RoomsService {
 
     await this.membersRepo.delete({ room_id: roomId, user_id: userId });
 
-    // Emit event to notify all clients about member count change
+    this.chatGateway.emitMemberLeft(roomId, userId);
+
     const memberCount = await this.getMemberCount(roomId);
     this.chatGateway.emitMemberCountUpdate(roomId, memberCount);
 
