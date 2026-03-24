@@ -106,15 +106,15 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
           this.selectedRoom.memberCount = data.memberCount;
         }
         // Also update the room in myRooms and publicRooms if it exists there
-        const myRoom = this.myRooms.find(r => r.room?.id === data.roomId);
+        const myRoom = this.myRooms.find((r) => r.room?.id === data.roomId);
         if (myRoom) myRoom.room.memberCount = data.memberCount;
-        const publicRoom = this.publicRooms.find(r => r.id === data.roomId);
+        const publicRoom = this.publicRooms.find((r) => r.id === data.roomId);
         if (publicRoom) publicRoom.memberCount = data.memberCount;
       }),
 
       this.chatService.userBanned$.subscribe((data) => {
         // Remove the banned room from user's room list
-        this.myRooms = this.myRooms.filter(r => r.room?.id !== data.roomId);
+        this.myRooms = this.myRooms.filter((r) => r.room?.id !== data.roomId);
 
         // If the banned room is currently selected, clear it
         if (this.selectedRoom && this.selectedRoom.id === data.roomId) {
@@ -134,6 +134,14 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
 
         // Show notification
         alert(data.message);
+      }),
+      this.chatService.messageDeleted$.subscribe((data) => {
+        this.messages = this.messages.filter((m) => m.id !== data.messageId);
+      }),
+
+      this.chatService.messageEdited$.subscribe((data) => {
+        const index = this.messages.findIndex((m) => m.id === data.id);
+        if (index !== -1) this.messages[index] = data;
       }),
     );
   }
@@ -254,7 +262,6 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
 
   deleteMessage(message: any) {
     this.chatService.deleteMessage(message.id, this.selectedRoom.id);
-    this.messages = this.messages.filter((m) => m.id !== message.id);
   }
 
   createRoom() {
