@@ -793,3 +793,5 @@
 
 .invite-success { color: #4caf50; font-size: 0.8rem; padding: 0 0.5rem; }
 .invite-error { color: #e94560; font-size: 0.8rem; padding: 0 0.5rem; }
+
+.error { color: #e94560; font-size: 0.8rem; padding: 0 0.5rem; }

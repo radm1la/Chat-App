@@ -64,6 +64,7 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
   inviteUsername = '';
   inviteSuccess = '';
   inviteError = '';
+  createRoomError = '';
 
   newRoom = {
     name: '',
@@ -221,16 +222,21 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
     this.messages = this.messages.filter((m) => m.id !== message.id);
   }
 
-  createRoom() {
-    this.roomsService
-      .createRoom(this.newRoom.name, this.newRoom.description, this.newRoom.isPrivate)
-      .subscribe(() => {
+createRoom() {
+  this.createRoomError = '';
+  this.roomsService
+    .createRoom(this.newRoom.name, this.newRoom.description, this.newRoom.isPrivate)
+    .subscribe({
+      next: () => {
         this.showCreateRoom = false;
         this.newRoom = { name: '', description: '', isPrivate: false };
         this.loadMyRooms();
-      });
-  }
-
+      },
+      error: (err) => {
+        this.createRoomError = err.error?.message || 'Failed to create room';
+      }
+    });
+}
   getPresenceStatus(userId: string) {
     return this.presenceMap[userId] || 'offline';
   }

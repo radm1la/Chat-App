@@ -287,6 +287,8 @@
       <label for="private">Private room</label>
     </div>
 
+    <p class="error" *ngIf="createRoomError">{{ createRoomError }}</p>
+
     <div class="modal-actions">
       <button class="cancel-btn" (click)="showCreateRoom = false">Cancel</button>
       <button class="create-btn" (click)="createRoom()">Create</button>
