@@ -239,4 +239,12 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
       this.server.to(user2Socket.socketId).emit('friend:removed');
     }
   }
+
+  emitRoomDeleted(roomId: string) {
+    this.server.emit('room:deleted', { roomId });
+  }
+
+  emitRoomCreated(room: any) {
+    this.server.emit('room:created', room);
+  }
 }

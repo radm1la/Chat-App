@@ -48,6 +48,10 @@ export class RoomsService {
       is_admin: true,
     });
 
+    if (!dto.is_private) {
+      this.chatGateway.emitRoomCreated({ ...room, memberCount: 1 });
+    }
+
     return room;
   }
 
@@ -183,6 +187,7 @@ export class RoomsService {
       throw new ForbiddenException('Only owner can delete the room');
 
     await this.roomsRepo.delete(roomId);
+    this.chatGateway.emitRoomDeleted(roomId);
     return { message: 'Room deleted' };
   }
 
