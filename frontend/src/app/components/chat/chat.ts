@@ -143,6 +143,12 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
         const index = this.messages.findIndex((m) => m.id === data.id);
         if (index !== -1) this.messages[index] = data;
       }),
+
+      this.chatService.adminChanged$.subscribe((data) => {
+        if (this.selectedRoom && data.roomId === this.selectedRoom.id) {
+          this.loadMembers();
+        }
+      }),
     );
   }
 

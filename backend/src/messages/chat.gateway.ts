@@ -203,4 +203,14 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
         .emit('personal:message:deleted', { messageId });
     }
   }
+
+  emitAdminStatusChanged(userId: string, roomId: string, isAdmin: boolean) {
+    const userSocket = this.connectedUsers.get(userId);
+    if (userSocket) {
+      this.server.to(userSocket.socketId).emit('room:admin-changed', {
+        roomId,
+        isAdmin,
+      });
+    }
+  }
 }

@@ -20,6 +20,7 @@ export class ChatService {
   messageEdited$ = new Subject<any>();
   personalMessageDeleted$ = new Subject<any>();
   personalMessageEdited$ = new Subject<any>();
+  adminChanged$ = new Subject<any>();
 
   constructor(
     private http: HttpClient,
@@ -70,6 +71,10 @@ export class ChatService {
 
     this.socket.on('personal:message:edited', (data) => {
       this.personalMessageEdited$.next(data);
+    });
+
+    this.socket.on('room:admin-changed', (data) => {
+      this.adminChanged$.next(data);
     });
   }
 

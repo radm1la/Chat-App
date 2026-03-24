@@ -239,6 +239,8 @@ export class RoomsService {
       { room_id: roomId, user_id: targetUserId },
       { is_admin: true },
     );
+
+    this.chatGateway.emitAdminStatusChanged(targetUserId, roomId, true);
     return { message: 'Admin added' };
   }
 
@@ -252,6 +254,8 @@ export class RoomsService {
       { room_id: roomId, user_id: targetUserId },
       { is_admin: false },
     );
+
+    this.chatGateway.emitAdminStatusChanged(targetUserId, roomId, false);
     return { message: 'Admin removed' };
   }
 }
