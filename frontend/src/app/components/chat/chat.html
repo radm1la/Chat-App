@@ -127,7 +127,10 @@
                 <span class="edited-tag" *ngIf="message.is_edited">edited</span>
               </div>
               <div class="reply-preview" *ngIf="message.reply_to">
-                <span>↩ Replying to a message</span>
+                <span class="reply-username">↩ {{ message.replyMessage?.sender?.username }}</span>
+                <span class="reply-content">{{
+                  message.replyMessage?.content | slice: 0 : 60
+                }}</span>
               </div>
               <div *ngIf="isFileMessage(message.content); else textMessage">
                 <div class="file-card">
@@ -166,10 +169,10 @@
 
         <!-- Reply preview -->
         <div class="reply-bar" *ngIf="replyingTo">
-          <span
-            >↩ Replying to {{ replyingTo.sender?.username }}:
-            {{ replyingTo.content | slice: 0 : 50 }}</span
-          >
+          <div class="reply-bar-content">
+            <span class="reply-username">↩ {{ replyingTo.sender?.username }}</span>
+            <span class="reply-text">{{ replyingTo.content | slice: 0 : 60 }}</span>
+          </div>
           <button (click)="replyingTo = null">✕</button>
         </div>
 

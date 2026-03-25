@@ -159,8 +159,13 @@
   background: #16213e;
 }
 
-.chat-header .header-left h3 { color: #fff; }
-.chat-header .header-left p { color: #888; font-size: 0.85rem; }
+.chat-header .header-left h3 {
+  color: #fff;
+}
+.chat-header .header-left p {
+  color: #888;
+  font-size: 0.85rem;
+}
 
 .leave-btn {
   padding: 0.4rem 0.8rem;
@@ -172,7 +177,10 @@
   font-size: 0.8rem;
 }
 
-.leave-btn:hover { background: #e94560; color: #fff; }
+.leave-btn:hover {
+  background: #e94560;
+  color: #fff;
+}
 
 .messages-area {
   flex: 1;
@@ -787,7 +795,10 @@
   box-sizing: border-box;
 }
 
-.invite-form input:focus { outline: none; border-color: #e94560; }
+.invite-form input:focus {
+  outline: none;
+  border-color: #e94560;
+}
 
 .invite-form button {
   padding: 0.5rem;
@@ -799,12 +810,26 @@
   font-size: 0.8rem;
 }
 
-.invite-form button:hover { background: #c73652; }
+.invite-form button:hover {
+  background: #c73652;
+}
 
-.invite-success { color: #4caf50; font-size: 0.8rem; padding: 0 0.5rem; }
-.invite-error { color: #e94560; font-size: 0.8rem; padding: 0 0.5rem; }
+.invite-success {
+  color: #4caf50;
+  font-size: 0.8rem;
+  padding: 0 0.5rem;
+}
+.invite-error {
+  color: #e94560;
+  font-size: 0.8rem;
+  padding: 0 0.5rem;
+}
 
-.error { color: #e94560; font-size: 0.8rem; padding: 0 0.5rem; }
+.error {
+  color: #e94560;
+  font-size: 0.8rem;
+  padding: 0 0.5rem;
+}
 
 .room-item-info {
   display: flex;
@@ -848,4 +873,37 @@
   justify-content: center;
   margin-left: 4px;
   vertical-align: middle;
+}
+
+.reply-preview {
+  background: #0f3460;
+  border-left: 3px solid #e94560;
+  padding: 0.3rem 0.5rem;
+  border-radius: 4px;
+  margin-bottom: 0.3rem;
+  font-size: 0.8rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+
+.reply-username {
+  color: #e94560;
+  font-weight: 600;
+  font-size: 0.75rem;
+}
+
+.reply-content,
+.reply-text {
+  color: #aaa;
+  font-size: 0.8rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.reply-bar-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
 }

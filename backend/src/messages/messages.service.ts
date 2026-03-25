@@ -1,4 +1,8 @@
-import { Injectable, ForbiddenException, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  ForbiddenException,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Message } from './message.entity';
@@ -21,7 +25,7 @@ export class MessagesService {
 
     const [messages, total] = await this.messagesRepo.findAndCount({
       where: { room_id: roomId, is_deleted: false },
-      relations: ['sender'],
+      relations: ['sender', 'replyMessage', 'replyMessage.sender'],
       order: { created_at: 'DESC' },
       take: limit,
       skip: (page - 1) * limit,
@@ -30,7 +34,12 @@ export class MessagesService {
     return { messages: messages.reverse(), total, page };
   }
 
-  async saveMessage(roomId: string, senderId: string, content: string, replyTo?: string) {
+  async saveMessage(
+    roomId: string,
+    senderId: string,
+    content: string,
+    replyTo?: string,
+  ) {
     const member = await this.membersRepo.findOne({
       where: { room_id: roomId, user_id: senderId },
     });
@@ -47,14 +56,17 @@ export class MessagesService {
 
     return this.messagesRepo.findOne({
       where: { id: message.id },
-      relations: ['sender'],
+      relations: ['sender', 'replyMessage', 'replyMessage.sender'],
     });
   }
 
   async editMessage(messageId: string, userId: string, content: string) {
-    const message = await this.messagesRepo.findOne({ where: { id: messageId } });
+    const message = await this.messagesRepo.findOne({
+      where: { id: messageId },
+    });
     if (!message) throw new NotFoundException('Message not found');
-    if (message.sender_id !== userId) throw new ForbiddenException('Not your message');
+    if (message.sender_id !== userId)
+      throw new ForbiddenException('Not your message');
 
     message.content = content;
     message.is_edited = true;
@@ -63,7 +75,9 @@ export class MessagesService {
   }
 
   async deleteMessage(messageId: string, userId: string, roomId: string) {
-    const message = await this.messagesRepo.findOne({ where: { id: messageId } });
+    const message = await this.messagesRepo.findOne({
+      where: { id: messageId },
+    });
     if (!message) throw new NotFoundException('Message not found');
 
     const member = await this.membersRepo.findOne({
