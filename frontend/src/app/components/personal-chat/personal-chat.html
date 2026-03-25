@@ -51,6 +51,9 @@
                 {{ getFileName(message.content) }}
               </a>
             </div>
+            <p class="file-comment" *ngIf="getFileComment(message.content)">
+              {{ getFileComment(message.content) }}
+            </p>
           </div>
         </div>
         <ng-template #textMessage>

@@ -177,12 +177,14 @@ export class PersonalChatComponent implements OnInit, AfterViewChecked, OnDestro
     this.http
       .post<any>(`${environment.apiUrl}/uploads/personal/${this.chatId}`, formData)
       .subscribe((attachment) => {
+        const comment = this.messageText.trim() ? `\n${this.messageText}` : '';
         this.http
           .post<any>(`${environment.apiUrl}/personal/chat/${this.chatId}/messages`, {
-            content: `📎 [${attachment.file_name}](${environment.apiUrl}${attachment.file_path})`,
+            content: `📎 [${attachment.file_name}](${environment.apiUrl}${attachment.file_path})${comment}`,
           })
           .subscribe();
         this.selectedFile = null;
+        this.messageText = '';
         this.shouldScrollToBottom = true;
       });
   }
@@ -208,6 +210,11 @@ export class PersonalChatComponent implements OnInit, AfterViewChecked, OnDestro
   getFileUrl(content: string) {
     const match = content?.match(/\((.+?)\)/);
     return match ? match[1] : '';
+  }
+
+  getFileComment(content: string) {
+    const lines = content?.split('\n');
+    return lines && lines.length > 1 ? lines.slice(1).join('\n') : '';
   }
 
   isImageFile(filename: string) {

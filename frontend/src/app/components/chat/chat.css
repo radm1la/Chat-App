@@ -944,3 +944,11 @@
 .message-input-area {
   position: relative;
 }
+
+.file-comment {
+  color: #ccc;
+  font-size: 0.85rem;
+  margin-top: 0.4rem;
+  padding-top: 0.4rem;
+  border-top: 1px solid #333;
+}

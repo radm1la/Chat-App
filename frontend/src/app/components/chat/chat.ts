@@ -386,11 +386,13 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
     this.http
       .post<any>(`${environment.apiUrl}/uploads/room/${this.selectedRoom.id}`, formData)
       .subscribe((attachment) => {
+        const comment = this.messageText.trim() ? `\n${this.messageText}` : '';
         this.chatService.sendMessage(
           this.selectedRoom.id,
-          `📎 [${attachment.file_name}](${environment.apiUrl}${attachment.file_path})`,
+          `📎 [${attachment.file_name}](${environment.apiUrl}${attachment.file_path})${comment}`,
         );
         this.selectedFile = null;
+        this.messageText = '';
       });
   }
 
@@ -410,6 +412,11 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
   getFileUrl(content: string) {
     const match = content?.match(/\((.+?)\)/);
     return match ? match[1] : '';
+  }
+
+  getFileComment(content: string) {
+    const lines = content?.split('\n');
+    return lines && lines.length > 1 ? lines.slice(1).join('\n') : '';
   }
 
   isImageFile(filename: string) {
