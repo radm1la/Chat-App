@@ -18,10 +18,12 @@ import { FriendsComponent } from '../friends/friends';
 import { PersonalChatComponent } from '../personal-chat/personal-chat';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
 @Component({
   selector: 'app-chat',
   standalone: true,
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
   imports: [
     CommonModule,
     FormsModule,
@@ -70,6 +72,7 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
   friendRequestSuccess = '';
   friendRequestError = '';
   friendNotifications = 0;
+  showEmojiPicker = false;
 
   newRoom = {
     name: '',
@@ -91,6 +94,7 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
     this.presenceService.startTracking();
     this.loadMyRooms();
     this.loadPublicRooms();
+    import('emoji-picker-element');
 
     this.subscriptions.push(
       this.chatService.newMessage$.subscribe((message) => {
@@ -562,5 +566,10 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
       element.classList.add('highlighted');
       setTimeout(() => element.classList.remove('highlighted'), 2000);
     }
+  }
+
+  onEmojiClick(event: any) {
+    this.messageText += event.detail.unicode;
+    this.showEmojiPicker = false;
   }
 }

@@ -18,10 +18,12 @@ import { environment } from '../../../environments/environment';
 import { AuthService } from '../../services/auth.service';
 import { ChatService } from '../../services/chat.service';
 import { Subscription } from 'rxjs';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
 @Component({
   selector: 'app-personal-chat',
   standalone: true,
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
   imports: [CommonModule, FormsModule, DatePipe],
   templateUrl: './personal-chat.html',
   styleUrl: './personal-chat.css',
@@ -43,6 +45,7 @@ export class PersonalChatComponent implements OnInit, AfterViewChecked, OnDestro
   private subscription!: Subscription;
   private deletedSubscription!: Subscription;
   replyingTo: any = null;
+  showEmojiPicker = false;
 
   constructor(
     private http: HttpClient,
@@ -53,6 +56,7 @@ export class PersonalChatComponent implements OnInit, AfterViewChecked, OnDestro
   ngOnInit() {
     this.currentUser = this.authService.getCurrentUser();
     this.initChat();
+    import('emoji-picker-element');
 
     this.subscription = this.chatService.newMessage$.subscribe((message) => {
       if (message.chat_id === this.chatId) {
@@ -257,5 +261,10 @@ export class PersonalChatComponent implements OnInit, AfterViewChecked, OnDestro
       element.classList.add('highlighted');
       setTimeout(() => element.classList.remove('highlighted'), 2000);
     }
+  }
+
+  onEmojiClick(event: any) {
+    this.messageText += event.detail.unicode;
+    this.showEmojiPicker = false;
   }
 }

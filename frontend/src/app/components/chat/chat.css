@@ -920,3 +920,27 @@
 .reply-preview:hover {
   background: #1a4a8a;
 }
+
+.emoji-btn {
+  background: transparent;
+  border: none;
+  font-size: 1.2rem;
+  cursor: pointer;
+  padding: 0.4rem;
+  border-radius: 6px;
+}
+
+.emoji-btn:hover {
+  background: #0f3460;
+}
+
+.emoji-picker-container {
+  position: absolute;
+  bottom: 70px;
+  left: 60px;
+  z-index: 200;
+}
+
+.message-input-area {
+  position: relative;
+}

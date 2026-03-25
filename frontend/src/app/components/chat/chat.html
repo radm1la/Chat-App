@@ -182,6 +182,10 @@
         <div class="message-input-area">
           <button class="attach-btn" (click)="fileInput.click()">📎</button>
           <input #fileInput type="file" style="display: none" (change)="onFileSelected($event)" />
+          <button class="emoji-btn" (click)="showEmojiPicker = !showEmojiPicker">😊</button>
+          <div class="emoji-picker-container" *ngIf="showEmojiPicker">
+            <emoji-picker (emoji-click)="onEmojiClick($event)"></emoji-picker>
+          </div>
           <textarea
             [(ngModel)]="messageText"
             placeholder="Type a message..."

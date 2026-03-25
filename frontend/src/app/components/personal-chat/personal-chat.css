@@ -342,3 +342,27 @@
   background: rgba(233, 69, 96, 0.15);
   transition: background 0.3s;
 }
+
+.emoji-btn {
+  background: transparent;
+  border: none;
+  font-size: 1.1rem;
+  cursor: pointer;
+  padding: 0.3rem;
+  border-radius: 6px;
+}
+
+.emoji-btn:hover {
+  background: #0f3460;
+}
+
+.emoji-picker-container {
+  position: absolute;
+  bottom: 60px;
+  left: 50px;
+  z-index: 200;
+}
+
+.message-input-area {
+  position: relative;
+}
