@@ -21,12 +21,9 @@
         </button>
         <button
           [class.active]="sidebarTab === 'friends'"
-          (click)="sidebarTab = 'friends'; pendingFriendRequests = 0"
+          (click)="sidebarTab = 'friends'; pendingFriendRequests = 0; friendNotifications = 0"
         >
-          Friends
-          <span class="tab-badge" *ngIf="totalFriendsNotifications > 0">
-            {{ totalFriendsNotifications }}
-          </span>
+          Friends <span *ngIf="totalFriendsNotifications > 0">🔔</span>
         </button>
       </div>
 

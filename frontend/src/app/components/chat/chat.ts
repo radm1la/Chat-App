@@ -69,6 +69,7 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
   pendingFriendRequests = 0;
   friendRequestSuccess = '';
   friendRequestError = '';
+  friendNotifications = 0;
 
   newRoom = {
     name: '',
@@ -120,6 +121,10 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
         this.pendingFriendRequests++;
       }),
 
+      this.chatService.friendAccepted$.subscribe(() => {
+        this.friendNotifications++;
+      }),
+      
       this.chatService.memberCountUpdates$.subscribe((data) => {
         if (this.selectedRoom && data.roomId === this.selectedRoom.id) {
           this.selectedRoom.memberCount = data.memberCount;
@@ -233,9 +238,8 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
 
   get totalFriendsNotifications() {
     const unreadPersonal = Object.values(this.unreadPersonalCounts).reduce((a, b) => a + b, 0);
-    return unreadPersonal + this.pendingFriendRequests;
+    return unreadPersonal + this.pendingFriendRequests + this.friendNotifications;
   }
-
   selectRoom(room: any) {
     if (this.selectedRoom) {
       this.chatService.leaveRoom(this.selectedRoom.id);
