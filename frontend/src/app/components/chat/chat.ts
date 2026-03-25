@@ -124,7 +124,7 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
       this.chatService.friendAccepted$.subscribe(() => {
         this.friendNotifications++;
       }),
-      
+
       this.chatService.memberCountUpdates$.subscribe((data) => {
         if (this.selectedRoom && data.roomId === this.selectedRoom.id) {
           this.selectedRoom.memberCount = data.memberCount;
@@ -553,5 +553,14 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
           }, 3000);
         },
       });
+  }
+
+  scrollToMessage(messageId: string) {
+    const element = document.getElementById('msg-' + messageId);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      element.classList.add('highlighted');
+      setTimeout(() => element.classList.remove('highlighted'), 2000);
+    }
   }
 }

@@ -907,3 +907,16 @@
   flex-direction: column;
   gap: 0.1rem;
 }
+
+.message.highlighted {
+  background: rgba(233, 69, 96, 0.15);
+  transition: background 0.3s;
+}
+
+.reply-preview {
+  cursor: pointer;
+}
+
+.reply-preview:hover {
+  background: #1a4a8a;
+}
