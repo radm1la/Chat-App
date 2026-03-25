@@ -42,6 +42,7 @@ export class PersonalChatComponent implements OnInit, AfterViewChecked, OnDestro
   private shouldScrollToBottom = true;
   private subscription!: Subscription;
   private deletedSubscription!: Subscription;
+  replyingTo: any = null;
 
   constructor(
     private http: HttpClient,
@@ -146,10 +147,13 @@ export class PersonalChatComponent implements OnInit, AfterViewChecked, OnDestro
         });
     } else {
       const text = this.messageText;
+      const replyToId = this.replyingTo?.id;
       this.messageText = '';
+      this.replyingTo = null;
       this.http
         .post<any>(`${environment.apiUrl}/personal/chat/${this.chatId}/messages`, {
           content: text,
+          replyTo: replyToId,
         })
         .subscribe();
     }
@@ -239,6 +243,19 @@ export class PersonalChatComponent implements OnInit, AfterViewChecked, OnDestro
           event.preventDefault();
         }
       }
+    }
+  }
+
+  replyTo(message: any) {
+    this.replyingTo = message;
+  }
+
+  scrollToMessage(messageId: string) {
+    const element = document.getElementById('pmsg-' + messageId);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      element.classList.add('highlighted');
+      setTimeout(() => element.classList.remove('highlighted'), 2000);
     }
   }
 }

@@ -1,4 +1,11 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, ManyToOne, JoinColumn } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  CreateDateColumn,
+  ManyToOne,
+  JoinColumn,
+} from 'typeorm';
 import { User } from '../users/user.entity';
 import { PersonalChat } from './personal-chat.entity';
 
@@ -32,6 +39,10 @@ export class PersonalMessage {
   @ManyToOne(() => User)
   @JoinColumn({ name: 'sender_id' })
   sender: User;
+
+  @ManyToOne(() => PersonalMessage)
+  @JoinColumn({ name: 'reply_to' })
+  replyMessage: PersonalMessage;
 
   @CreateDateColumn()
   created_at: Date;

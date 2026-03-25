@@ -14,9 +14,10 @@
       <button (click)="loadMore()">Load older messages</button>
     </div>
 
-    <div 
+    <div
       class="message"
       *ngFor="let message of messages"
+      [id]="'pmsg-' + message.id"
       [class.own-message]="message.sender_id === currentUser?.id"
     >
       <div class="message-avatar">
@@ -25,8 +26,16 @@
       <div class="message-content">
         <div class="message-header">
           <span class="message-username">{{ message.sender?.username }}</span>
-          <span class="message-time">{{ message.created_at | date:'HH:mm' }}</span>
+          <span class="message-time">{{ message.created_at | date: 'HH:mm' }}</span>
           <span class="edited-tag" *ngIf="message.is_edited">edited</span>
+        </div>
+        <div
+          class="reply-preview"
+          *ngIf="message.reply_to"
+          (click)="scrollToMessage(message.reply_to)"
+        >
+          <span class="reply-username">↩ {{ message.replyMessage?.sender?.username }}</span>
+          <span class="reply-content">{{ message.replyMessage?.content | slice: 0 : 60 }}</span>
         </div>
         <div *ngIf="isFileMessage(message.content); else textMessage">
           <div class="file-card">
@@ -48,17 +57,25 @@
           <p class="message-text">{{ message.content }}</p>
         </ng-template>
         <div class="message-actions">
-          <button 
-            *ngIf="message.sender_id === currentUser?.id"
-            (click)="startEdit(message)"
-          >✏️</button>
-          <button 
-            *ngIf="message.sender_id === currentUser?.id"
-            (click)="deleteMessage(message)"
-          >🗑️</button>
+          <button (click)="replyTo(message)">↩</button>
+          <button *ngIf="message.sender_id === currentUser?.id" (click)="startEdit(message)">
+            ✏️
+          </button>
+          <button *ngIf="message.sender_id === currentUser?.id" (click)="deleteMessage(message)">
+            🗑️
+          </button>
         </div>
       </div>
     </div>
+  </div>
+
+  <!-- Reply bar -->
+  <div class="reply-bar" *ngIf="replyingTo">
+    <div class="reply-bar-content">
+      <span class="reply-username">↩ {{ replyingTo.sender?.username }}</span>
+      <span class="reply-text">{{ replyingTo.content | slice: 0 : 60 }}</span>
+    </div>
+    <button (click)="replyingTo = null">✕</button>
   </div>
 
   <!-- File preview -->
@@ -70,12 +87,7 @@
   <!-- Input -->
   <div class="message-input-area">
     <button class="attach-btn" (click)="fileInput.click()">📎</button>
-    <input
-      #fileInput
-      type="file"
-      style="display:none"
-      (change)="onFileSelected($event)"
-    />
+    <input #fileInput type="file" style="display: none" (change)="onFileSelected($event)" />
     <textarea
       [(ngModel)]="messageText"
       placeholder="Type a message..."

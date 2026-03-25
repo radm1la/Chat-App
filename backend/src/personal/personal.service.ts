@@ -77,7 +77,7 @@ export class PersonalService {
 
     const [messages, total] = await this.messagesRepo.findAndCount({
       where: { chat_id: chatId, is_deleted: false },
-      relations: ['sender'],
+      relations: ['sender', 'replyMessage', 'replyMessage.sender'],
       order: { created_at: 'DESC' },
       take: limit,
       skip: (page - 1) * limit,
@@ -117,10 +117,9 @@ export class PersonalService {
 
     const savedMessage = await this.messagesRepo.findOne({
       where: { id: message.id },
-      relations: ['sender'],
+      relations: ['sender', 'replyMessage', 'replyMessage.sender'],
     });
 
-    // Emit to both users via socket
     this.chatGateway.emitPersonalMessage(
       chat.user1_id,
       chat.user2_id,
