@@ -832,3 +832,20 @@
   font-size: 0.75rem;
 }
 
+.sidebar-tabs button {
+  position: relative;
+}
+
+.tab-badge {
+  background: #e94560;
+  color: #fff;
+  border-radius: 50%;
+  width: 18px;
+  height: 18px;
+  font-size: 0.7rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 4px;
+  vertical-align: middle;
+}

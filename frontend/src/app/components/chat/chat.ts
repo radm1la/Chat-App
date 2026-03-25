@@ -66,6 +66,7 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
   inviteError = '';
   createRoomError = '';
   unreadPersonalCounts: { [key: string]: number } = {};
+  pendingFriendRequests = 0;
 
   newRoom = {
     name: '',
@@ -99,16 +100,22 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
             this.unreadCounts[message.room_id] = (this.unreadCounts[message.room_id] || 0) + 1;
           }
         } else if (message.chat_id) {
-          // Personal message
-          if (!this.activePersonalChat || this.activePersonalChat.id !== message.sender_id) {
-            const senderId = message.sender_id;
-            this.unreadPersonalCounts[senderId] = (this.unreadPersonalCounts[senderId] || 0) + 1;
+          // Personal message - only count if we are the receiver, not the sender
+          if (message.sender_id !== this.currentUser?.id) {
+            if (!this.activePersonalChat || this.activePersonalChat.id !== message.sender_id) {
+              const senderId = message.sender_id;
+              this.unreadPersonalCounts[senderId] = (this.unreadPersonalCounts[senderId] || 0) + 1;
+            }
           }
         }
       }),
 
       this.chatService.presenceUpdates$.subscribe((data) => {
         this.presenceMap[data.userId] = data.status;
+      }),
+
+      this.chatService.friendRequest$.subscribe(() => {
+        this.pendingFriendRequests++;
       }),
 
       this.chatService.memberCountUpdates$.subscribe((data) => {
@@ -220,6 +227,11 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
     this.roomsService.getPublicRooms(this.roomSearch).subscribe((rooms) => {
       this.publicRooms = rooms;
     });
+  }
+
+  get totalFriendsNotifications() {
+    const unreadPersonal = Object.values(this.unreadPersonalCounts).reduce((a, b) => a + b, 0);
+    return unreadPersonal + this.pendingFriendRequests;
   }
 
   selectRoom(room: any) {
