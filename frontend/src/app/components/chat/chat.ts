@@ -67,6 +67,8 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
   createRoomError = '';
   unreadPersonalCounts: { [key: string]: number } = {};
   pendingFriendRequests = 0;
+  friendRequestSuccess = '';
+  friendRequestError = '';
 
   newRoom = {
     name: '',
@@ -523,5 +525,29 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
         alert(err.error?.message || 'Failed to leave room');
       },
     });
+  }
+
+  sendFriendRequestFromRoom(member: any) {
+    this.friendRequestSuccess = '';
+    this.friendRequestError = '';
+
+    this.http
+      .post(`${environment.apiUrl}/friends/request`, {
+        username: member.user?.username,
+      })
+      .subscribe({
+        next: () => {
+          this.friendRequestSuccess = 'Friend request sent!';
+          setTimeout(() => {
+            this.friendRequestSuccess = '';
+          }, 3000);
+        },
+        error: (err) => {
+          this.friendRequestError = err.error?.message || 'Failed to send request';
+          setTimeout(() => {
+            this.friendRequestError = '';
+          }, 3000);
+        },
+      });
   }
 }

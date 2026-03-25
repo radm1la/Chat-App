@@ -263,11 +263,17 @@
     <h3>{{ selectedMember.user?.username }}</h3>
 
     <div class="action-list">
-      <button (click)="toggleAdmin(selectedMember)">
+      <button (click)="sendFriendRequestFromRoom(selectedMember)">Add Friend</button>
+      <button (click)="toggleAdmin(selectedMember)" *ngIf="isOwnerOfRoom()">
         {{ selectedMember.is_admin ? 'Remove Admin' : 'Make Admin' }}
       </button>
-      <button class="danger" (click)="banMember(selectedMember)">Ban from room</button>
+      <button class="danger" *ngIf="isAdminInRoom()" (click)="banMember(selectedMember)">
+        Remove from room
+      </button>
     </div>
+
+    <p class="invite-success" *ngIf="friendRequestSuccess">{{ friendRequestSuccess }}</p>
+    <p class="invite-error" *ngIf="friendRequestError">{{ friendRequestError }}</p>
 
     <div class="modal-actions">
       <button class="cancel-btn" (click)="selectedMember = null">Close</button>
