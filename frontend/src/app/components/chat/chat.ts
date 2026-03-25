@@ -374,7 +374,19 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
 
   onFileSelected(event: any) {
     const file = event.target.files[0];
-    if (file) this.selectedFile = file;
+    if (!file) return;
+
+    const isImage = file.type.startsWith('image/');
+    const maxSize = isImage ? 3 * 1024 * 1024 : 20 * 1024 * 1024;
+    const maxSizeLabel = isImage ? '3MB' : '20MB';
+
+    if (file.size > maxSize) {
+      alert(`File too large! ${isImage ? 'Images' : 'Files'} must be under ${maxSizeLabel}`);
+      event.target.value = '';
+      return;
+    }
+
+    this.selectedFile = file;
   }
 
   uploadFile() {
@@ -519,6 +531,10 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
       if (items[i].type.indexOf('image') !== -1) {
         const file = items[i].getAsFile();
         if (file) {
+          if (file.size > 3 * 1024 * 1024) {
+            alert('Image too large! Images must be under 3MB');
+            return;
+          }
           this.selectedFile = file;
           event.preventDefault();
         }

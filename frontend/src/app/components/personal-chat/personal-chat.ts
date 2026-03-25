@@ -165,7 +165,19 @@ export class PersonalChatComponent implements OnInit, AfterViewChecked, OnDestro
 
   onFileSelected(event: any) {
     const file = event.target.files[0];
-    if (file) this.selectedFile = file;
+    if (!file) return;
+
+    const isImage = file.type.startsWith('image/');
+    const maxSize = isImage ? 3 * 1024 * 1024 : 20 * 1024 * 1024;
+    const maxSizeLabel = isImage ? '3MB' : '20MB';
+
+    if (file.size > maxSize) {
+      alert(`File too large! ${isImage ? 'Images' : 'Files'} must be under ${maxSizeLabel}`);
+      event.target.value = '';
+      return;
+    }
+
+    this.selectedFile = file;
   }
 
   uploadFile() {
@@ -242,6 +254,7 @@ export class PersonalChatComponent implements OnInit, AfterViewChecked, OnDestro
   close() {
     this.closed.emit();
   }
+
   onPaste(event: ClipboardEvent) {
     const items = event.clipboardData?.items;
     if (!items) return;
@@ -250,6 +263,10 @@ export class PersonalChatComponent implements OnInit, AfterViewChecked, OnDestro
       if (items[i].type.indexOf('image') !== -1) {
         const file = items[i].getAsFile();
         if (file) {
+          if (file.size > 3 * 1024 * 1024) {
+            alert('Image too large! Images must be under 3MB');
+            return;
+          }
           this.selectedFile = file;
           event.preventDefault();
         }
