@@ -2,6 +2,7 @@
   <!-- Top navbar -->
   <div class="navbar">
     <div class="navbar-left">
+      <button class="mobile-menu-btn" (click)="toggleSidebarMobile()">☰</button>
       <h1>💬 ChatApp</h1>
     </div>
     <div class="navbar-right">
@@ -13,7 +14,7 @@
 
   <div class="main-content">
     <!-- Sidebar -->
-    <div class="sidebar">
+    <div class="sidebar" [class.mobile-show]="showSidebarMobile">
       <!-- Sidebar tabs -->
       <div class="sidebar-tabs">
         <button [class.active]="sidebarTab === 'rooms'" (click)="sidebarTab = 'rooms'">
@@ -90,10 +91,12 @@
         <!-- Room header -->
         <div class="chat-header">
           <div class="header-left">
+            <button class="mobile-back-btn" (click)="selectedRoom = null">←</button>
             <h3># {{ selectedRoom.name }}</h3>
             <p>{{ selectedRoom.description }}</p>
           </div>
           <div class="header-right">
+            <button class="mobile-members-btn" (click)="toggleMembersMobile()">👥</button>
             <button
               class="leave-btn"
               *ngIf="selectedRoom?.owner_id !== currentUser?.id"
@@ -216,7 +219,7 @@
     </div>
 
     <!-- Members sidebar -->
-    <div class="members-sidebar" *ngIf="selectedRoom">
+    <div class="members-sidebar" *ngIf="selectedRoom" [class.mobile-show]="showMembersMobile">
       <h4>Members</h4>
       <div class="member-item" *ngFor="let member of roomMembers">
         <div class="member-avatar">

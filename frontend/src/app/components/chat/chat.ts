@@ -75,6 +75,8 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
   friendRequestError = '';
   friendNotifications = 0;
   showEmojiPicker = false;
+  showSidebarMobile = false;
+  showMembersMobile = false;
 
   newRoom = {
     name: '',
@@ -298,6 +300,8 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
     this.chatService.joinRoom(room.id);
     this.loadMessages();
     this.loadMembers();
+    this.showSidebarMobile = false;
+    this.showMembersMobile = false;
   }
 
   joinAndSelectRoom(room: any) {
@@ -637,5 +641,15 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
   onEmojiClick(event: any) {
     this.messageText += event.detail.unicode;
     this.showEmojiPicker = false;
+  }
+
+  toggleSidebarMobile() {
+    this.showSidebarMobile = !this.showSidebarMobile;
+    if (this.showSidebarMobile) this.showMembersMobile = false;
+  }
+
+  toggleMembersMobile() {
+    this.showMembersMobile = !this.showMembersMobile;
+    if (this.showMembersMobile) this.showSidebarMobile = false;
   }
 }

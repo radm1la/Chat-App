@@ -15,6 +15,13 @@
   box-shadow: 0 4px 20px rgba(0,0,0,0.3);
 }
 
+@media (max-width: 480px) {
+  .auth-card {
+    padding: 1.5rem;
+    border-radius: 8px;
+  }
+}
+
 .auth-card h2 {
   color: #fff;
   margin-bottom: 0.5rem;

@@ -1,1 +1,14 @@
-/* You can add global styles to this file, and also import other style files */
+/* Global Styles */
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  width: 100%;
+  overflow: hidden; /* Prevent scrolling outside the main app container */
+  background: #1a1a2e; /* Match app background to prevent white flashes */
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}

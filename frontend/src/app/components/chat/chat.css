@@ -26,6 +26,7 @@
   font-size: 1.2rem;
   color: #e94560;
 }
+
 .navbar .username {
   color: #aaa;
   margin-right: 1rem;
@@ -122,10 +123,12 @@
 .room-item:hover {
   background: #0f3460;
 }
+
 .room-item.active {
   background: #0f3460;
   border-left: 3px solid #e94560;
 }
+
 .room-item .room-name {
   font-size: 0.9rem;
   color: #ccc;
@@ -139,6 +142,7 @@
 .room-item.has-unread .room-name {
   color: #ffcc00;
   font-weight: 600;
+  font-size: 0.9rem;
 }
 
 .unread-badge {
@@ -172,6 +176,7 @@
 .chat-header .header-left h3 {
   color: #fff;
 }
+
 .chat-header .header-left p {
   color: #888;
   font-size: 0.85rem;
@@ -231,6 +236,7 @@
 .message:hover {
   background: #16213e;
 }
+
 .message:hover .message-actions {
   opacity: 1;
 }
@@ -268,10 +274,12 @@
   font-size: 0.9rem;
   color: #e94560;
 }
+
 .message-time {
   font-size: 0.75rem;
   color: #666;
 }
+
 .edited-tag {
   font-size: 0.7rem;
   color: #666;
@@ -434,15 +442,19 @@
   font-size: 0.85rem;
   color: #ccc;
 }
+
 .member-status {
   font-size: 0.7rem;
 }
+
 .member-status.online {
   color: #4caf50;
 }
+
 .member-status.afk {
   color: #ff9800;
 }
+
 .member-status.offline {
   color: #666;
 }
@@ -718,9 +730,11 @@
 .action-list button:hover {
   background: #1a4a8a;
 }
+
 .action-list button.danger {
   color: #e94560;
 }
+
 .action-list button.danger:hover {
   background: rgba(233, 69, 96, 0.1);
 }
@@ -772,10 +786,12 @@
   background: #e94560;
   color: #fff;
 }
+
 .join-btn.active {
   border-color: #4caf50;
   color: #4caf50;
 }
+
 .join-btn.active:hover {
   background: #4caf50;
   color: #fff;
@@ -829,6 +845,7 @@
   font-size: 0.8rem;
   padding: 0 0.5rem;
 }
+
 .invite-error {
   color: #e94560;
   font-size: 0.8rem;
@@ -961,4 +978,115 @@
   margin-top: 0.4rem;
   padding-top: 0.4rem;
   border-top: 1px solid #333;
+}
+
+/* Mobile specific buttons - hidden by default */
+.mobile-menu-btn,
+.mobile-back-btn,
+.mobile-members-btn {
+  display: none;
+  background: transparent;
+  border: none;
+  color: #fff;
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 0.5rem;
+  margin-right: 0.5rem;
+}
+
+@media (max-width: 992px) {
+  .navbar-left {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .navbar {
+    padding: 0 1rem;
+  }
+
+  .navbar .username {
+    display: none;
+  }
+
+  .mobile-menu-btn {
+    display: block;
+  }
+
+  /* Sidebar drawer */
+  .sidebar {
+    position: absolute;
+    left: -240px;
+    top: 56px;
+    bottom: 0;
+    z-index: 50;
+    transition: left 0.3s ease;
+    box-shadow: 5px 0 15px rgba(0, 0, 0, 0.5);
+  }
+
+  .sidebar.mobile-show {
+    left: 0;
+  }
+
+  /* Chat area adjustments */
+  .chat-area {
+    width: 100%;
+  }
+
+  .chat-header {
+    padding: 0.75rem 1rem;
+  }
+
+  .mobile-back-btn,
+  .mobile-members-btn {
+    display: block;
+  }
+
+  .header-left p {
+    display: none;
+    /* Hide room description on mobile header to save space */
+  }
+
+  .messages-area {
+    padding: 1rem;
+  }
+
+  .message-input-area {
+    padding: 0.75rem;
+    gap: 0.5rem;
+  }
+
+  .message-input-area textarea {
+    padding: 0.5rem;
+  }
+
+  .send-btn {
+    padding: 0.5rem 1rem;
+  }
+
+  /* Members sidebar drawer */
+  .members-sidebar {
+    position: absolute;
+    right: -200px;
+    top: 56px;
+    bottom: 0;
+    z-index: 50;
+    transition: right 0.3s ease;
+    box-shadow: -5px 0 15px rgba(0, 0, 0, 0.5);
+  }
+
+  .members-sidebar.mobile-show {
+    right: 0;
+  }
+
+  /* When room is selected, show back button and hide other stuff */
+  .no-room {
+    padding: 2rem;
+    text-align: center;
+  }
+
+  .modal {
+    width: 90% !important;
+    padding: 1.5rem;
+  }
 }
