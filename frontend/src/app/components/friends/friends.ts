@@ -107,6 +107,13 @@ export class FriendsComponent implements OnInit, OnDestroy {
     });
   }
 
+  banUser(friend: any) {
+    if (!confirm(`Are you sure you want to block ${friend.user?.username}?`)) return;
+    this.http.post(`${environment.apiUrl}/friends/ban/${friend.user.id}`, {}).subscribe(() => {
+      this.loadFriends();
+    });
+  }
+
   openChat(friend: any) {
     this.openPersonalChat.emit(friend.user);
   }

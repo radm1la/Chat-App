@@ -134,6 +134,19 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
         this.presenceMap[data.userId] = data.status;
       }),
 
+      this.chatService.userBlocked$.subscribe((data) => {
+        if (this.activePersonalChat && this.activePersonalChat.id === data.userId) {
+          this.activePersonalChat = null;
+        }
+        
+        if (this.unreadPersonalCounts[data.userId]) {
+          const newCounts = { ...this.unreadPersonalCounts };
+          delete newCounts[data.userId];
+          this.unreadPersonalCounts = newCounts;
+        }
+        this.cdr.detectChanges();
+      }),
+
       this.chatService.friendRequest$.subscribe(() => {
         this.pendingFriendRequests++;
       }),

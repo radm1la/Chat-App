@@ -36,6 +36,19 @@
 
     <hr />
 
+    <!-- Blocked Users -->
+    <div class="section">
+      <h4>Blocked Users</h4>
+      <div class="session-item" *ngFor="let user of bannedUsers">
+        <div class="session-info">
+          <span class="session-browser">{{ user.username }}</span>
+          <span class="session-date">Blocked on: {{ user.banned_at | date: 'dd/MM/yyyy' }}</span>
+        </div>
+        <button class="remove-btn" (click)="unbanUser(user)">Unblock</button>
+      </div>
+      <div class="empty" *ngIf="bannedUsers.length === 0">No blocked users</div>
+    </div>
+
     <!-- Delete Account -->
     <div class="section danger-section">
       <h4>Delete Account</h4>

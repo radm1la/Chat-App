@@ -156,13 +156,40 @@ export class FriendsService {
         { sender_id: targetId, receiver_id: userId },
       ],
     });
-    if (friendship) await this.friendsRepo.delete(friendship.id);
+    if (friendship) {
+      await this.friendsRepo.delete(friendship.id);
+      this.chatGateway.emitFriendRemoved(userId, targetId);
+    }
+
+    this.chatGateway.emitUserBlocked(userId, targetId);
 
     return { message: 'User banned' };
   }
 
+  async getBannedUsers(userId: string) {
+    const bans = await this.bansRepo.find({
+      where: { banner_id: userId },
+    });
+
+    const bannedUsers: any[] = [];
+    for (const ban of bans) {
+      const user = await this.usersRepo.findOne({ where: { id: ban.banned_id } });
+      if (user) {
+        bannedUsers.push({
+          id: user.id,
+          username: user.username,
+          avatar_url: user.avatar_url,
+          banned_at: ban.created_at,
+        });
+      }
+    }
+    return bannedUsers;
+  }
+
   async unbanUser(userId: string, targetId: string) {
     await this.bansRepo.delete({ banner_id: userId, banned_id: targetId });
+    // Note: We don't necessarily emit an unbanned event unless we want the UI to refresh. 
+    // Usually, unbanning just restores the ability to send requests, which doesn't require immediate UI cleanup on the banned user's side.
     return { message: 'User unbanned' };
   }
 

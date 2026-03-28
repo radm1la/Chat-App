@@ -21,6 +21,7 @@ export class SettingsComponent implements OnInit {
   passwordSuccess = '';
   showConfirmDelete = false;
   sessions: any[] = [];
+  bannedUsers: any[] = [];
 
   constructor(
     private authService: AuthService,
@@ -29,6 +30,20 @@ export class SettingsComponent implements OnInit {
 
   ngOnInit() {
     this.loadSessions();
+    this.loadBannedUsers();
+  }
+
+  loadBannedUsers() {
+    this.http.get<any[]>(`${environment.apiUrl}/friends/bans`).subscribe((users) => {
+      this.bannedUsers = users;
+    });
+  }
+
+  unbanUser(user: any) {
+    if (!confirm(`Are you sure you want to unblock ${user.username}?`)) return;
+    this.http.delete(`${environment.apiUrl}/friends/ban/${user.id}`).subscribe(() => {
+      this.loadBannedUsers();
+    });
   }
 
   loadSessions() {

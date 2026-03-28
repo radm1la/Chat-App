@@ -37,6 +37,11 @@ export class FriendsController {
     return this.friendsService.removeFriend(req.user.sub, friendId);
   }
 
+  @Get('bans')
+  getBannedUsers(@Request() req) {
+    return this.friendsService.getBannedUsers(req.user.sub);
+  }
+
   @Post('ban/:id')
   banUser(@Request() req, @Param('id') targetId: string) {
     return this.friendsService.banUser(req.user.sub, targetId);

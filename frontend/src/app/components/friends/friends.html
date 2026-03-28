@@ -23,8 +23,9 @@
         <span class="unread-badge" *ngIf="getUnreadCount(friend.user?.id) > 0">
           {{ getUnreadCount(friend.user?.id) }}
         </span>
-        <button class="msg-btn" (click)="openChat(friend)">💬</button>
-        <button class="remove-btn" (click)="removeFriend(friend)">✕</button>
+        <button class="msg-btn" (click)="openChat(friend)" title="Message">💬</button>
+        <button class="remove-btn" (click)="removeFriend(friend)" title="Remove Friend">✕</button>
+        <button class="remove-btn ban-btn" (click)="banUser(friend)" title="Block User">🚫</button>
       </div>
     </div>
   </div>
