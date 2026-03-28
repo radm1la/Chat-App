@@ -113,18 +113,14 @@ Then open your browser and go to:
 The following items from the specification were not fully implemented:
 
 ### 1. Multi-tab presence
-Closing one browser tab marks the user as **offline**, even if other tabs are still open.  
-Proper cross-tab coordination (e.g., using `BroadcastChannel` or a shared worker) was not implemented.
 
 ### 2. Accordion-style sidebar
 The specification requires the room list to **compact in an accordion style** when a room is selected (UI requirement 4.1.1).  
-The current implementation keeps the sidebar **static**.
 
 ### 3. Physical file deletion
-When a room or account is deleted, the **database records are removed**, but the actual uploaded files remain stored in the filesystem inside the Docker volume.
+When a room or account is deleted, the **database records are removed**, but the actual uploaded files remain stored in the filesystem inside the Docker volume. (as i checked)
 
 ### 4. 3KB message size limit
-The specification requires a **maximum message size of 3KB**, but this restriction is not enforced on the backend.
 
 ### 5. Password reset UI
 The backend endpoint exists. However, there is **no dedicated frontend page or form** to use this feature.
@@ -133,7 +129,6 @@ I originally did not implement the UI because it requires email verification, an
 
 ### 6. File access control
 Uploaded files are served as **public static URLs**.  
-Anyone who knows the direct file URL can access it, because **room membership is not re-checked during file download**.
 
 ## 🧪 Testing
 
