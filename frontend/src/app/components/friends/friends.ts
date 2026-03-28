@@ -92,12 +92,14 @@ export class FriendsComponent implements OnInit, OnDestroy {
     this.http.post(`${environment.apiUrl}/friends/accept/${request.id}`, {}).subscribe(() => {
       this.loadFriends();
       this.loadPending();
+      this.chatService.friendRequestHandled$.next();
     });
   }
 
   declineRequest(request: any) {
     this.http.post(`${environment.apiUrl}/friends/decline/${request.id}`, {}).subscribe(() => {
       this.loadPending();
+      this.chatService.friendRequestHandled$.next();
     });
   }
 

@@ -148,11 +148,21 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
       }),
 
       this.chatService.friendRequest$.subscribe(() => {
-        this.pendingFriendRequests++;
+        if (this.sidebarTab !== 'friends') {
+          this.pendingFriendRequests++;
+        }
       }),
 
       this.chatService.friendAccepted$.subscribe(() => {
-        this.friendNotifications++;
+        if (this.sidebarTab !== 'friends') {
+          this.friendNotifications++;
+        }
+      }),
+
+      this.chatService.friendRequestHandled$.subscribe(() => {
+        if (this.pendingFriendRequests > 0) {
+          this.pendingFriendRequests--;
+        }
       }),
 
       this.chatService.memberCountUpdates$.subscribe((data) => {

@@ -30,6 +30,7 @@ export class ChatService {
   addedToRoom$ = new Subject<any>();
   memberJoined$ = new Subject<any>();
   memberLeft$ = new Subject<any>();
+  friendRequestHandled$ = new Subject<void>();
 
   constructor(
     private http: HttpClient,
