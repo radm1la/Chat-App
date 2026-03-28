@@ -36,7 +36,8 @@ Then open your browser and go to:
 ## ✅ Implemented Features
 <details>
     <summary>View...</summary>
-    ### User Accounts & Authentication
+    
+### User Accounts & Authentication
 - Self-registration with email, password and unique username
 - Sign in / sign out (current session only)
 - Persistent login across browser close/reopen
