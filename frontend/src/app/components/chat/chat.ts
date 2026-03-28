@@ -55,6 +55,7 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
   unreadCounts: { [key: string]: number } = {};
   presenceMap: { [key: string]: string } = {};
   private shouldScrollToBottom = true;
+  private isAtBottom = true;
   private subscriptions: Subscription[] = [];
   showSettings = false;
   sidebarTab = 'rooms';
@@ -102,7 +103,9 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
           // Room message
           if (this.selectedRoom && message.room_id === this.selectedRoom.id) {
             this.messages.push(message);
-            this.shouldScrollToBottom = true;
+            if (this.isAtBottom || message.sender_id === this.currentUser?.id) {
+              this.shouldScrollToBottom = true;
+            }
           } else {
             this.unreadCounts[message.room_id] = (this.unreadCounts[message.room_id] || 0) + 1;
           }
@@ -355,8 +358,7 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
 
   onScroll(event: any) {
     const element = event.target;
-    const atBottom = element.scrollHeight - element.scrollTop === element.clientHeight;
-    this.shouldScrollToBottom = atBottom;
+    this.isAtBottom = Math.abs(element.scrollHeight - element.scrollTop - element.clientHeight) <= 10;
   }
 
   scrollToBottom() {

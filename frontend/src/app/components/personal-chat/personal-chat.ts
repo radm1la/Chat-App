@@ -42,6 +42,7 @@ export class PersonalChatComponent implements OnInit, AfterViewChecked, OnDestro
   currentPage = 1;
   selectedFile: File | null = null;
   private shouldScrollToBottom = true;
+  private isAtBottom = true;
   private subscription!: Subscription;
   private deletedSubscription!: Subscription;
   replyingTo: any = null;
@@ -63,7 +64,9 @@ export class PersonalChatComponent implements OnInit, AfterViewChecked, OnDestro
         const exists = this.messages.find((m) => m.id === message.id);
         if (!exists) {
           this.messages.push(message);
-          this.shouldScrollToBottom = true;
+          if (this.isAtBottom || message.sender_id === this.currentUser?.id) {
+            this.shouldScrollToBottom = true;
+          }
         }
       }
     });
@@ -243,6 +246,11 @@ export class PersonalChatComponent implements OnInit, AfterViewChecked, OnDestro
       event.preventDefault();
       this.sendMessage();
     }
+  }
+
+  onScroll(event: any) {
+    const element = event.target;
+    this.isAtBottom = Math.abs(element.scrollHeight - element.scrollTop - element.clientHeight) <= 10;
   }
 
   scrollToBottom() {

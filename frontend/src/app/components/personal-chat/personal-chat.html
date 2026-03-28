@@ -9,7 +9,7 @@
   </div>
 
   <!-- Messages -->
-  <div class="messages-area" #messagesArea>
+  <div class="messages-area" #messagesArea (scroll)="onScroll($event)">
     <div class="load-more" *ngIf="hasMoreMessages">
       <button (click)="loadMore()">Load older messages</button>
     </div>
