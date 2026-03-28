@@ -33,8 +33,9 @@ Then open your browser and go to:
 | File Storage | Local filesystem |
 | Containerization | Docker + Docker Compose |
 
+## ✅ Implemented Features
 <details>
-    <summary>## ✅ Implemented Features</summary>
+    <summary>CLick...</summary>
     ### User Accounts & Authentication
 - Self-registration with email, password and unique username
 - Sign in / sign out (current session only)
