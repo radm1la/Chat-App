@@ -42,9 +42,20 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
         lastActive: new Date(),
       });
 
+      // Tell everyone this user is online
       this.server.emit('presence:update', {
         userId: payload.sub,
         status: 'online',
+      });
+
+      // Send all currently online users to the newly connected client
+      this.connectedUsers.forEach((socketInfo, userId) => {
+        if (userId !== payload.sub) {
+          client.emit('presence:update', {
+            userId,
+            status: 'online',
+          });
+        }
       });
     } catch {
       client.disconnect();
@@ -245,10 +256,14 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     const user2Socket = this.connectedUsers.get(userId2);
 
     if (user1Socket) {
-      this.server.to(user1Socket.socketId).emit('user:blocked', { userId: userId2 });
+      this.server
+        .to(user1Socket.socketId)
+        .emit('user:blocked', { userId: userId2 });
     }
     if (user2Socket) {
-      this.server.to(user2Socket.socketId).emit('user:blocked', { userId: userId1 });
+      this.server
+        .to(user2Socket.socketId)
+        .emit('user:blocked', { userId: userId1 });
     }
   }
 
