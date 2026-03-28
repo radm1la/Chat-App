@@ -110,25 +110,13 @@ Then open your browser and go to:
 
 
 ## ⚠️ Known Limitations
-The following items from the specification were not fully implemented:
 
-### 1. Multi-tab presence
-
-### 2. Accordion-style sidebar
-The specification requires the room list to **compact in an accordion style** when a room is selected (UI requirement 4.1.1).  
-
-### 3. Physical file deletion
-When a room or account is deleted, the **database records are removed**, but the actual uploaded files remain stored in the filesystem inside the Docker volume. (as i checked)
-
-### 4. 3KB message size limit
-
-### 5. Password reset UI
-The backend endpoint exists. However, there is **no dedicated frontend page or form** to use this feature.
-
-I originally did not implement the UI because it requires email verification, and without it anyone who knows the email could reset the password.
-
-### 6. File access control
-Uploaded files are served as **public static URLs**.  
+- **Multi-tab presence:** Closing one tab marks the user offline even if other tabs are open.  
+- **Accordion-style sidebar:** Room list does not collapse in accordion style when a room is selected.  
+- **Physical file deletion:** Deleted rooms/accounts remove DB records, but files remain in the Docker volume.  
+- **3KB message size limit:** Messages exceeding 3KB are not fully handled.  
+- **Password reset UI:** Backend exists, but no frontend page/form due to email verification concerns.  
+- **File access control:** Uploaded files are served as public static URLs.
 
 ## 🧪 Testing
 
