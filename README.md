@@ -34,7 +34,7 @@ Then open your browser and go to:
 | Containerization | Docker + Docker Compose |
 
 <details>
-    <summary>Implemented Features</summary>
+    <summary>## ✅ Implemented Features</summary>
     ### User Accounts & Authentication
 - Self-registration with email, password and unique username
 - Sign in / sign out (current session only)
