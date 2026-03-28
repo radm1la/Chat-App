@@ -1,148 +1,166 @@
-💬 ChatApp
+# ChatApp
 
 A classic web-based real-time chat application built with Angular, NestJS, PostgreSQL, Redis, and Docker.
 
-[!NOTE]
+> ⚠️ **Note:**
+> This project was developed as a **IT Camp assignment**.
+> The application architecture, code structure, and parts of the implementation were created with the assistance of **AI development tools**.
+> The AI helped generate and refine code, while the project setup, testing, and integration were performed by me.
+> The UI for this project was largely generated using AI-assisted tools.  
 
-This project was developed as an IT Camp assignment.
+## 🚀 Getting Started
 
-The application architecture, code structure, and UI were created with the assistance of AI development tools. Project setup, testing, and integration were performed manually.
-
-🚀 Getting Started
-
-The only requirement is Docker Desktop.
-
-# Clone the repository
-git clone [https://github.com/radm1la/Chat-App.git](https://github.com/radm1la/Chat-App.git)
-
-# Navigate to the directory
+The only requirement is [Docker Desktop](https://www.docker.com/products/docker-desktop).
+```bash
+git clone https://github.com/radm1la/Chat-App.git
 cd Chat-App
-
-# Start the application
 docker compose up --build
+```
+
+Then open your browser and go to:
+- **Frontend:** http://localhost:4200
+- **Backend API:** http://localhost:3000
+
+## 🛠 Tech Stack
+
+| Layer | Technology |
+|------|------------|
+| Frontend | Angular 19 + TypeScript |
+| Backend | NestJS + TypeScript |
+| Database | PostgreSQL 16 |
+| Cache / Presence | Redis 7 |
+| Real-time | Socket.io |
+| File Storage | Local filesystem |
+| Containerization | Docker + Docker Compose |
+
+<details>
+    <summery>Implemented Features</summery>
+    ### User Accounts & Authentication
+- Self-registration with email, password and unique username
+- Sign in / sign out (current session only)
+- Persistent login across browser close/reopen
+- Password change for logged-in users
+- Password reset by email
+- Account deletion (removes owned rooms, messages, files)
+- Active session management — view browser/IP details, logout specific sessions
+- Passwords stored securely with bcrypt
+
+### Presence
+- Online / AFK / Offline status indicators
+- AFK triggered after 1 minute of inactivity
+- Real-time presence updates via Socket.io
+
+### Friends & Contacts
+- Send friend requests by username or from room member list
+- Accept / decline friend requests (real-time notification)
+- Remove friends (real-time update)
+- User-to-user ban — terminates friendship
+- Unread indicators on Friends tab with 🔔 notification bell
+
+### Chat Rooms
+- Create public or private rooms
+- Public room catalog with search and live member count
+- Join / leave public rooms freely
+- Private rooms joinable by invitation only
+- Room owner and admin roles with full permission system
+- Admins can: ban/unban members, delete messages, manage admins, view banned users list with who banned each user
+- Owner can: do everything admins can + delete the room
+- Real-time room events: member join/leave, ban/unban, admin changes, room deletion/creation
+- Banned users cannot rejoin unless unbanned by admin
+
+### Messaging
+- Plain text and multiline messages
+- Emoji picker 😊
+- Reply to messages with click-to-scroll to original
+- Edit your own messages (shows "edited" indicator)
+- Delete your own messages / admins can delete any message in their room
+- Infinite scroll for message history
+- Messages delivered to offline users on reconnect
+- Unread indicators on room names (yellow highlight with number of unread messages)
+
+### Personal (Direct) Messages
+- One-to-one messaging between friends
+- Same features as room chat: reply, edit, delete, file upload, emoji
+- Real-time delivery via Socket.io
+- Unread count indicators per contact
+
+### File & Image Sharing
+- Upload files (max 20MB) and images (max 3MB)
+- Upload via button or paste (Ctrl+V)
+- Images displayed inline, files shown as download cards
+- Optional comment typed in message input sent alongside attachment
+- File size validation with user-friendly error messages
+
+### Notifications
+- Unread message badges on room names
+- Unread message badges on friend names
+- 🔔 bell on Friends tab for pending requests and new messages
+- Real-time alerts for ban/unban events
+
+### Admin UI
+- All admin actions via modal dialogs
+- Ban / unban members
+- Make / remove admins
+- View banned users list with who performed each ban
+- Delete room
+- Delete messages
+</details>
 
 
-🔗 Access Points
-
-Frontend: http://localhost:4200
-
-Backend API: http://localhost:3000
-
-🛠 Tech Stack
-
-Layer
-
-Technology
-
-Frontend
-
-Angular 19 + TypeScript
-
-Backend
-
-NestJS + TypeScript
-
-Database
-
-PostgreSQL 16
-
-Cache / Presence
-
-Redis 7
-
-Real-time
-
-Socket.io
-
-File Storage
-
-Local filesystem
-
-Containerization
-
-Docker + Docker Compose
-
-✅ Implemented Features
-
-👤 User Accounts & Authentication
-
-Registration: Self-registration with email and unique username.
-
-Security: Passwords stored securely using bcrypt.
-
-Session Management: Persistent login, session tracking (IP/Browser details), and specific session logout.
-
-Account Actions: Password change, email-based reset, and full account deletion.
-
-🟢 Presence & Social
-
-Status Indicators: Online / AFK / Offline status.
-
-Auto-AFK: Triggered after 1 minute of inactivity.
-
-Friend System: Requests (real-time notifications), friend removal, and user-to-user banning.
-
-Notifications: Unread indicators with 🔔 notification bells.
-
-🏠 Chat Rooms
-
-Room Types: Create Public (searchable) or Private (invite-only) rooms.
-
-Roles: Comprehensive Owner and Admin permission systems.
-
-Moderation: Admins can ban/unban members, delete messages, and manage other admins.
-
-Events: Real-time updates for joins, leaves, and permission changes.
-
-✉️ Messaging & Sharing
-
-Rich Text: Plain text, multiline support, and Emoji picker 😊.
-
-Interactions: Reply to messages (click-to-scroll) and message editing.
-
-History: Infinite scroll for message history and offline message delivery.
-
-File Sharing: Upload files (max 20MB) and images (max 3MB) via button or Paste (Ctrl+V).
-
-⚠️ Known Limitations
-
+## ⚠️ Known Limitations
 The following items from the specification were not fully implemented:
 
-Multi-tab Presence: Closing one tab marks the user as offline, even if other tabs remain open.
+### 1. Multi-tab presence
+Closing one browser tab marks the user as **offline**, even if other tabs are still open.  
+Proper cross-tab coordination (e.g., using `BroadcastChannel` or a shared worker) was not implemented.
 
-Accordion Sidebar: The sidebar remains static instead of compacting when a room is selected.
+### 2. Accordion-style sidebar
+The specification requires the room list to **compact in an accordion style** when a room is selected (UI requirement 4.1.1).  
+The current implementation keeps the sidebar **static**.
 
-Physical Deletion: DB records are removed, but files remain in the Docker volume filesystem.
+### 3. Physical file deletion
+When a room or account is deleted, the **database records are removed**, but the actual uploaded files remain stored in the filesystem inside the Docker volume.
 
-Message Size: The 3KB maximum message size limit is not yet enforced on the backend.
+### 4. 3KB message size limit
+The specification requires a **maximum message size of 3KB**, but this restriction is not enforced on the backend.
 
-Password Reset UI: The backend logic exists, but a dedicated frontend form is missing.
+### 5. Password reset UI
+The backend endpoint exists. However, there is **no dedicated frontend page or form** to use this feature.
 
-File Access Control: Files are public static URLs; room membership is not re-checked on download.
+I originally did not implement the UI because it requires email verification, and without it anyone who knows the email could reset the password.
 
-📁 Project Structure
+### 6. File access control
+Uploaded files are served as **public static URLs**.  
+Anyone who knows the direct file URL can access it, because **room membership is not re-checked during file download**.
 
+## 🧪 Testing
+
+The application was manually tested throughout development.In addition to manual testing, AI-assisted testing was performed using the **Antigravity IDE**, where an AI agent independently navigated and tested the application, verifying core user flows and identifying edge cases.
+
+## 📁 Project Structure
+```
 chat-app/
 ├── docker-compose.yml
-├── frontend/                 # Angular 19 app
+├── frontend/                  # Angular 19 app
 │   ├── Dockerfile
-│   └── src/app/
-│       ├── components/       # UI: Chat, Login, Friends, Settings
-│       └── services/         # Logic: Auth, Rooms, Presence
-└── backend/                  # NestJS app
+│   ├── nginx.conf
+│   └── src/
+│       └── app/
+│           ├── components/    # chat, login, register, friends, settings...
+│           └── services/      # auth, chat, rooms, presence
+└── backend/                   # NestJS app
     ├── Dockerfile
     └── src/
-        ├── auth/             # JWT, Sessions, Passwords
-        ├── rooms/            # Room CRUD, Bans, Permissions
-        ├── messages/         # Socket.io Gateway
-        ├── personal/         # Direct Messaging
-        └── uploads/          # File Handling
+        ├── auth/              # JWT auth, sessions, password management
+        ├── rooms/             # Room CRUD, members, bans, admins
+        ├── messages/          # Room messaging, Socket.io gateway
+        ├── personal/          # Direct messaging
+        ├── friends/           # Friend requests, bans
+        ├── uploads/           # File handling
+        └── database/          # schema.sql
+```
 
+## 📄 License
 
-🧪 Testing
+This project was created as a IT Camp assignment.
 
-The application was manually tested throughout development. In addition to manual testing, AI-assisted testing was performed using the Antigravity IDE, where an AI agent verified core user flows and edge cases.
-
-📄 License
-
-This project was created as an IT Camp assignment.
