@@ -244,6 +244,13 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     this.server.emit('room:deleted', { roomId });
   }
 
+  emitAddedToRoom(userId: string, room: any) {
+    const userSocket = this.connectedUsers.get(userId);
+    if (userSocket) {
+      this.server.to(userSocket.socketId).emit('room:added', room);
+    }
+  }
+
   emitRoomCreated(room: any) {
     this.server.emit('room:created', room);
   }

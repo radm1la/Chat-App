@@ -154,6 +154,9 @@ export class RoomsService {
 
     await this.membersRepo.save({ room_id: roomId, user_id: user.id });
 
+    // Notify the invited user that they were added to the room
+    this.chatGateway.emitAddedToRoom(user.id, room);
+
     // Emit event to notify all clients about member count change
     const memberCount = await this.getMemberCount(roomId);
     this.chatGateway.emitMemberCountUpdate(roomId, memberCount);

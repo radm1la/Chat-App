@@ -194,6 +194,9 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
           this.publicRooms.push(room);
         }
       }),
+      this.chatService.addedToRoom$.subscribe((room) => {
+        this.loadMyRooms();
+      }),
       this.chatService.memberJoined$.subscribe((member) => {
         if (this.selectedRoom && member.room_id === this.selectedRoom.id) {
           const exists = this.roomMembers.find((m) => m.user_id === member.user_id);
