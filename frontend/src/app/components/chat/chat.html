@@ -39,6 +39,7 @@
             class="room-item"
             *ngFor="let member of myRooms"
             [class.active]="selectedRoom?.id === member.room?.id"
+            [class.has-unread]="unreadCounts[member.room?.id] > 0"
             (click)="selectRoom(member.room)"
           >
             <span class="room-name"># {{ member.room?.name }}</span>

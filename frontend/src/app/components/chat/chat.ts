@@ -5,6 +5,7 @@ import {
   ViewChild,
   ElementRef,
   AfterViewChecked,
+  ChangeDetectorRef,
 } from '@angular/core';
 import { CommonModule, DatePipe, SlicePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -87,6 +88,7 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
     private roomsService: RoomsService,
     private presenceService: PresenceService,
     private http: HttpClient,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit() {
@@ -107,14 +109,22 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
               this.shouldScrollToBottom = true;
             }
           } else {
-            this.unreadCounts[message.room_id] = (this.unreadCounts[message.room_id] || 0) + 1;
+            this.unreadCounts = {
+              ...this.unreadCounts,
+              [message.room_id]: (this.unreadCounts[message.room_id] || 0) + 1
+            };
+            this.cdr.detectChanges();
           }
         } else if (message.chat_id) {
           // Personal message - only count if we are the receiver, not the sender
           if (message.sender_id !== this.currentUser?.id) {
             if (!this.activePersonalChat || this.activePersonalChat.id !== message.sender_id) {
               const senderId = message.sender_id;
-              this.unreadPersonalCounts[senderId] = (this.unreadPersonalCounts[senderId] || 0) + 1;
+              this.unreadPersonalCounts = {
+                ...this.unreadPersonalCounts,
+                [senderId]: (this.unreadPersonalCounts[senderId] || 0) + 1
+              };
+              this.cdr.detectChanges();
             }
           }
         }
@@ -190,6 +200,7 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
           this.roomMembers = [];
           alert('This room has been deleted.');
         }
+        this.chatService.leaveRoom(data.roomId);
       }),
       this.chatService.roomCreated$.subscribe((room) => {
         const exists = this.publicRooms.find((r) => r.id === room.id);
@@ -231,6 +242,12 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
   loadMyRooms() {
     this.roomsService.getMyRooms().subscribe((rooms) => {
       this.myRooms = rooms;
+      // Join all rooms in socket.io to receive real-time message events for unread indicators
+      this.myRooms.forEach((member) => {
+        if (member.room?.id) {
+          this.chatService.joinRoom(member.room.id);
+        }
+      });
     });
   }
 
@@ -251,13 +268,10 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
     return unreadPersonal + this.pendingFriendRequests + this.friendNotifications;
   }
   selectRoom(room: any) {
-    if (this.selectedRoom) {
-      this.chatService.leaveRoom(this.selectedRoom.id);
-    }
     this.selectedRoom = room;
     this.messages = [];
     this.currentPage = 1;
-    this.unreadCounts[room.id] = 0;
+    this.unreadCounts = { ...this.unreadCounts, [room.id]: 0 };
     this.chatService.joinRoom(room.id);
     this.loadMessages();
     this.loadMembers();
@@ -552,6 +566,7 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
 
     this.roomsService.leaveRoom(this.selectedRoom.id).subscribe({
       next: () => {
+        this.chatService.leaveRoom(this.selectedRoom.id);
         this.selectedRoom = null;
         this.messages = [];
         this.roomMembers = [];
